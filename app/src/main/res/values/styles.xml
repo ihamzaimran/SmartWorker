@@ -1,0 +1,22 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="AvailabilitySwitch" parent="Theme.AppCompat.Light">
+
+        <item name="colorControlActivated">@color/disbale_thumb_green</item>
+
+        <item name="colorSwitchThumbNormal">@color/colorPrimary</item>
+
+        <item name="android:colorForeground">@color/colorPrimary</item>
+    </style>
+
+</resources>
