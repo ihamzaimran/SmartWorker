@@ -29,11 +29,8 @@ public class Registration extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private ProgressBar progressBar;
 
-    private EditText mEmail,mPassword,mPhone,mCNIC,mFname,mLname;
-    private EditText costTxt;
+    private EditText mEmail,mPassword,mPhone,mCNIC,mFname,mLname,costTxt;;
     private RadioGroup radioGroup;
-     String experience;
-
     private DatabaseReference myRef;
 
     @Override
@@ -164,7 +161,6 @@ public class Registration extends AppCompatActivity {
         SavingUser.put("CNIC",mCNIC.getText().toString());
         SavingUser.put("PhoneNumber","+92"+mPhone.getText().toString());
         SavingUser.put("Cost per Hour",costTxt.getText().toString());
-        SavingUser.put("Experience",experience);
         myRef.updateChildren(SavingUser);
 
     }

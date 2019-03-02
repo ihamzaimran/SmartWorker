@@ -48,11 +48,13 @@ public class LoginActivity extends AppCompatActivity {
         password = (EditText)(findViewById(R.id.LoginPassword_txt));
 
 
+
+        startService(new Intent(LoginActivity.this, OnAppKilled.class));
         loginBtn = (Button)(findViewById(R.id.LoginBtn));
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String Email = email.getText().toString();
+                final String Email = email.getText().toString();
                  final String Password = password.getText().toString();
                 if (TextUtils.isEmpty(Email)) {
                     Toast.makeText(getApplicationContext(), "Enter email address!", Toast.LENGTH_SHORT).show();
@@ -78,6 +80,8 @@ public class LoginActivity extends AppCompatActivity {
                                     if (password.length() < 6) {
                                         password.setError("Please enter correct password");
                                     } else {
+                                            password.setText("");
+                                            email.setText("");
                                         Toast.makeText(LoginActivity.this, "Authentication failed, check your email and password",
                                                 Toast.LENGTH_LONG).show();
                                     }

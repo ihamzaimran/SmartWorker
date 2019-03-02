@@ -22,6 +22,7 @@
         android:roundIcon="@mipmap/applogolauncher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <service android:name=".OnAppKilled" android:stopWithTask="false"/>
         <activity android:name=".CNIC" />
         <activity android:name=".StartScreen">
             <intent-filter>
@@ -35,6 +36,7 @@
         <activity android:name=".PhoneAuthActivity" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".fogotpassword" />
+        <activity android:name=".PhoneRegisteredSplash"/>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").

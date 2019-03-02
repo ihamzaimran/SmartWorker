@@ -34,10 +34,9 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Map;
 
-public class MapsActivity  extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks, com.google.android.gms.location.LocationListener {
-
-
-
+public class MapsActivity  extends FragmentActivity implements OnMapReadyCallback,
+        GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks,
+        com.google.android.gms.location.LocationListener {
 
 
     private GoogleMap mMap;
@@ -48,8 +47,7 @@ public class MapsActivity  extends FragmentActivity implements OnMapReadyCallbac
 
     private Button logoutBtn;
     private Switch availabilitySwitch;
-
-
+    private boolean isLoggingOut = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +66,8 @@ public class MapsActivity  extends FragmentActivity implements OnMapReadyCallbac
         logoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                isLoggingOut = true;
+                disconnectHandyman();
                  FirebaseAuth mAuth = FirebaseAuth.getInstance();
                  mAuth.signOut();
                 Intent i = new Intent(MapsActivity.this, LoginActivity.class);
@@ -78,12 +78,11 @@ public class MapsActivity  extends FragmentActivity implements OnMapReadyCallbac
         availabilitySwitch = (Switch) (findViewById(R.id.availabiltySwitch));
         availabilitySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked == false){
-                    onStop();
+                if(isChecked ){
+                    connectHandyman();
                 }
                 else{
-                    startActivity(getIntent());
-                    finish();
+                    disconnectHandyman();
                 }
             }
         });
@@ -149,11 +148,6 @@ public class MapsActivity  extends FragmentActivity implements OnMapReadyCallbac
         mLocationRequest.setInterval(1000);
         mLocationRequest.setFastestInterval(1000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
     }
 
     @Override
@@ -164,6 +158,16 @@ public class MapsActivity  extends FragmentActivity implements OnMapReadyCallbac
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
+    }
+
+    private void connectHandyman(){
+
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
+                android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+        }
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
     }
 
     final int LOCATION_REQUEST_CODE = 1;
@@ -182,14 +186,16 @@ public class MapsActivity  extends FragmentActivity implements OnMapReadyCallbac
         }
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
+
+    private void disconnectHandyman(){
+
         LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("HandymanAvailable");
         GeoFire geoFire = new GeoFire(ref);
         geoFire.removeLocation(userId);
     }
+
+
 
 }
