@@ -104,7 +104,6 @@ public class CNIC extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 savingCNIC();
-                Toast.makeText(getApplicationContext(), "Congratulations! Account created successfully!", Toast.LENGTH_LONG).show();
                 Intent loginIntent = new Intent(CNIC.this, LoginActivity.class);
                 startActivity(loginIntent);
                 finish();

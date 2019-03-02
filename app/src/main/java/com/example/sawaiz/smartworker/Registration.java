@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -29,6 +30,9 @@ public class Registration extends AppCompatActivity {
     private ProgressBar progressBar;
 
     private EditText mEmail,mPassword,mPhone,mCNIC,mFname,mLname;
+    private EditText costTxt;
+    private RadioGroup radioGroup;
+     String experience;
 
     private DatabaseReference myRef;
 
@@ -49,6 +53,10 @@ public class Registration extends AppCompatActivity {
         mPhone = (EditText)(findViewById(R.id.rPhoneNo_txt));
 
 
+        costTxt = (EditText) (findViewById(R.id.ECcost_txt));
+
+
+
         createAccount = (Button)(findViewById(R.id.rCreateAccountBtn));
         createAccount.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,7 +68,8 @@ public class Registration extends AppCompatActivity {
                 final String lname = mLname.getText().toString();
                 final String phone = mPhone.getText().toString();
 
-                createAccount.setEnabled(false);
+
+                //createAccount.setEnabled(false);
 
                 if (TextUtils.isEmpty(fname)) {
                     Toast.makeText(getApplicationContext(), "Enter First Name", Toast.LENGTH_SHORT).show();
@@ -130,8 +139,6 @@ public class Registration extends AppCompatActivity {
                             myRef = database.getReference().child("Users").child("Handyman").child(user_id);
                             myRef.setValue("true");
                             saveHandyman();
-                            Toast.makeText(Registration.this, "Please Provide CNIC back image."
-                                   , Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(Registration.this, CNIC.class));
                             finish();
                         }
@@ -155,7 +162,9 @@ public class Registration extends AppCompatActivity {
         SavingUser.put("EmailAddress",mEmail.getText().toString());
         SavingUser.put("PhoneNumber",mPhone.getText().toString());
         SavingUser.put("CNIC",mCNIC.getText().toString());
-        SavingUser.put("PhoneNumber",mPhone.getText().toString());
+        SavingUser.put("PhoneNumber","+92"+mPhone.getText().toString());
+        SavingUser.put("Cost per Hour",costTxt.getText().toString());
+        SavingUser.put("Experience",experience);
         myRef.updateChildren(SavingUser);
 
     }
