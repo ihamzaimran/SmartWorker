@@ -7,25 +7,27 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:fillViewport="true"
-    android:background="@color/white"
+    android:background="@color/colorPrimary"
     >
 
 
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        >
 
 
         <TextView
             android:id="@+id/cnicDetail_lbl"
-            android:layout_width="402dp"
-            android:layout_height="48dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
-            android:text="  Please provide your CNIC's front and back picture for Verfication."
-            android:textColor="@color/black"
+            android:text="Please provide your CNIC's front and back picture for Verfication."
+            android:textColor="@color/white"
             android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -57,7 +59,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
-            android:background="@color/colorPrimary"
+            android:background="#8b9dc3"
             android:text="Reset"
             android:textColor="@color/white"
             android:visibility="invisible"
@@ -77,7 +79,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
-            android:background="@color/colorPrimary"
+            android:background="#8b9dc3"
             android:text="@string/save_continue"
             android:textColor="@color/white"
             android:visibility="invisible"
@@ -98,7 +100,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:indeterminate="true"
-            android:indeterminateTint="@color/colorPrimary"
+            android:indeterminateTint="@color/white"
             android:indeterminateTintMode="src_atop"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -117,7 +119,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
-            android:background="@color/colorPrimary"
+            android:background="#8b9dc3"
             android:text="Attach CNIC back image"
             android:textColor="@color/white"
             android:visibility="visible"

@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <!--
@@ -22,7 +23,12 @@
         android:roundIcon="@mipmap/applogolauncher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <service android:name=".OnAppKilled" android:stopWithTask="false"/>
+        <activity android:name=".HandymanSettings"></activity>
+
+        <service
+            android:name=".OnAppKilled"
+            android:stopWithTask="false" />
+
         <activity android:name=".CNIC" />
         <activity android:name=".StartScreen">
             <intent-filter>
@@ -32,11 +38,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".Registration" />
-        <activity android:name=".HomeScreen" />
         <activity android:name=".PhoneAuthActivity" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".fogotpassword" />
-        <activity android:name=".PhoneRegisteredSplash"/>
+        <activity android:name=".PhoneRegisteredSplash" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").

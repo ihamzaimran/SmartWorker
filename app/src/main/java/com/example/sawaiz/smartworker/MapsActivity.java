@@ -45,7 +45,7 @@ public class MapsActivity  extends FragmentActivity implements OnMapReadyCallbac
     LocationRequest mLocationRequest;
     private SupportMapFragment mapFragment;
 
-    private Button logoutBtn;
+    private Button logoutBtn, SettingsBtn;
     private Switch availabilitySwitch;
     private boolean isLoggingOut = false;
 
@@ -62,28 +62,43 @@ public class MapsActivity  extends FragmentActivity implements OnMapReadyCallbac
             mapFragment.getMapAsync(this);
         }
 
+
+
         logoutBtn = (Button)(findViewById(R.id.mLogOutBtn));
         logoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 isLoggingOut = true;
                 disconnectHandyman();
-                 FirebaseAuth mAuth = FirebaseAuth.getInstance();
-                 mAuth.signOut();
+                 FirebaseAuth.getInstance().signOut();
                 Intent i = new Intent(MapsActivity.this, LoginActivity.class);
                 startActivity(i);
                 finish();
+                return;
+
             }
         });
+
+
         availabilitySwitch = (Switch) (findViewById(R.id.availabiltySwitch));
         availabilitySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked ){
+                if(isChecked){
                     connectHandyman();
                 }
                 else{
                     disconnectHandyman();
                 }
+            }
+        });
+
+        SettingsBtn = (Button)(findViewById(R.id.MapSettingsBtn));
+        SettingsBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(MapsActivity.this, HandymanSettings.class);
+                startActivity(i);
+                return;
             }
         });
 
@@ -162,10 +177,8 @@ public class MapsActivity  extends FragmentActivity implements OnMapReadyCallbac
 
     private void connectHandyman(){
 
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
-                android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(MapsActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST_CODE);
         }
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
     }

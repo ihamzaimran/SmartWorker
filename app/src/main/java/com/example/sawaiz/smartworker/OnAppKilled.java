@@ -1,5 +1,4 @@
 package com.example.sawaiz.smartworker;
-
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
@@ -22,7 +21,7 @@ public class OnAppKilled extends Service {
         super.onTaskRemoved(rootIntent);
 
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("HandymanAvailable");
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("driversAvailable");
         GeoFire geoFire = new GeoFire(ref);
         geoFire.removeLocation(userId);
     }

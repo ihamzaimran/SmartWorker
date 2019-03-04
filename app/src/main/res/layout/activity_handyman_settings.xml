@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.sawaiz.smartworker.HandymanSettings"
+    android:background="@color/colorPrimary"
+    >
+
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="10dp"
+
+    >
+
+    <ImageView
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:id="@+id/profileImage"
+        android:src="@drawable/image_profile"
+        android:background="@color/white"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="30dp"
+        android:layout_gravity="center"
+        />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="First Name: "
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            />
+
+
+        <EditText
+            android:id="@+id/fname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:backgroundTint="@color/white"
+            android:layout_marginEnd="5dp"
+            android:textSize="15sp"
+            android:inputType="textPersonName"
+            android:textColor="@color/white"
+            android:selectAllOnFocus="false"
+            android:singleLine="true"
+            />
+
+    </LinearLayout>
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Last Name: "
+        android:textColor="@color/white"
+        android:textSize="15sp"
+        />
+
+    <EditText
+        android:id="@+id/lname"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="20dp"
+        android:backgroundTint="@color/white"
+        android:inputType="textPersonName"
+        android:textColor="@color/white"
+        android:textSize="15sp"
+        android:selectAllOnFocus="false"
+        android:singleLine="true"
+        />
+
+</LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Email Address: "
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            />
+
+        <TextView
+            android:id="@+id/email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:layout_marginEnd="5dp"
+            android:textSize="15sp"
+            android:textColor="@color/white" />
+
+    </LinearLayout>
+
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Phone Number: "
+        android:textColor="@color/white"
+        android:textSize="15sp"
+        />
+
+    <TextView
+        android:id="@+id/phone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="5dp"
+        android:textColor="@color/white"
+        android:layout_marginBottom="20dp"
+        android:textSize="15sp"
+        />
+
+
+
+</LinearLayout>
+
+
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content">
+
+       <TextView
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:text="CNIC: "
+           android:textColor="@color/white"
+           android:textSize="15sp"
+           />
+
+       <TextView
+           android:id="@+id/cnic"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:layout_marginEnd="5dp"
+           android:textColor="@color/white"
+           android:layout_marginBottom="20dp"
+           android:textSize="15sp"
+           />
+
+   </LinearLayout>
+
+
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:textColor="@color/white"
+    android:textSize="15sp"
+    android:text="Your Skill is: "
+    />
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/radioGroupBtnSkills"
+        android:orientation="vertical"
+        android:textSize="15sp"
+        >
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Plumber"
+            android:id="@+id/sPlumber"
+            android:textColor="@color/white"
+            android:buttonTint="@color/white"
+            />
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Electrician"
+            android:id="@+id/sElectrician"
+            android:textColor="@color/white"
+            android:buttonTint="@color/white"
+            />
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Gardener"
+            android:id="@+id/sGardener"
+            android:textColor="@color/white"
+            android:buttonTint="@color/white"
+            />
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="House Keeper"
+            android:id="@+id/sHouseKeeper"
+            android:textColor="@color/white"
+            android:buttonTint="@color/white"
+            />
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Carpenter"
+            android:id="@+id/sCarpenter"
+            android:textColor="@color/white"
+            android:buttonTint="@color/white"
+            />
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Painter"
+            android:id="@+id/sPainter"
+            android:textColor="@color/white"
+            android:buttonTint="@color/white"
+            />
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Mason"
+            android:id="@+id/sMason"
+            android:textColor="@color/white"
+            android:buttonTint="@color/white"
+            />
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Appliance Repairer"
+            android:id="@+id/sApplianceRepairer"
+            android:textColor="@color/white"
+            android:buttonTint="@color/white"
+            />
+
+    </RadioGroup>
+
+
+
+
+
+    <Button
+        android:id="@+id/confirm"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#8b9dc3"
+        android:layout_marginTop="20dp"
+        android:text="save changes"
+        android:textColor="@color/white" />
+
+    <Button
+        android:id="@+id/updatePasswordBtn"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:background="#8b9dc3"
+        android:text="Update Password"
+        android:textColor="@color/white" />
+
+    <Button
+        android:id="@+id/back"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:background="#8b9dc3"
+        android:text="back"
+        android:textColor="@color/white" />
+
+</LinearLayout>
+</ScrollView>

@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
@@ -30,8 +31,12 @@ public class Registration extends AppCompatActivity {
     private ProgressBar progressBar;
 
     private EditText mEmail,mPassword,mPhone,mCNIC,mFname,mLname,costTxt;;
-    private RadioGroup radioGroup;
     private DatabaseReference myRef;
+
+    private RadioGroup RegradioGroup;
+    private RadioButton selectedRadioButton;
+
+    private String RegSkill;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,10 +53,9 @@ public class Registration extends AppCompatActivity {
         mLname = (EditText)(findViewById(R.id.rLname_txt));
         mPassword = (EditText)(findViewById(R.id.rPassword_txt));
         mPhone = (EditText)(findViewById(R.id.rPhoneNo_txt));
-
-
         costTxt = (EditText) (findViewById(R.id.ECcost_txt));
 
+        RegradioGroup = (RadioGroup)(findViewById(R.id.RegradioBtnSkills));
 
 
         createAccount = (Button)(findViewById(R.id.rCreateAccountBtn));
@@ -64,7 +68,13 @@ public class Registration extends AppCompatActivity {
                 final String fname = mFname.getText().toString();
                 final String lname = mLname.getText().toString();
                 final String phone = mPhone.getText().toString();
+                final String Cost = costTxt.getText().toString();
 
+                final int COST = Integer.parseInt(Cost);
+
+
+                int selectedRadioBtnId = RegradioGroup.getCheckedRadioButtonId();
+                selectedRadioButton = (RadioButton) findViewById(selectedRadioBtnId);
 
                 //createAccount.setEnabled(false);
 
@@ -116,6 +126,24 @@ public class Registration extends AppCompatActivity {
                     return;
                 }
 
+            if(TextUtils.isEmpty(Cost)){
+                costTxt.setError("Cannot be empty!");
+                Toast.makeText(getApplicationContext(), "Enter amount between 500 and 1500", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+                if(COST > 1500 || COST <500 ){
+                    costTxt.setError("Per Hour Rate should be between 300 and 1500!");
+                    Toast.makeText(getApplicationContext(), "Enter amount between 500 and 1500", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if(RegradioGroup.getCheckedRadioButtonId()== -1){
+                    Toast.makeText(getApplicationContext(), "Please select a Skill to continue!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+
                 progressBar.setVisibility(View.VISIBLE);
 
 
@@ -129,8 +157,12 @@ public class Registration extends AppCompatActivity {
                             Toast.makeText(Registration.this, "Registration failed."
                                     + task.getException(), Toast.LENGTH_SHORT).show();
                             createAccount.setEnabled(true);
+
                         } else {
+
                             progressBar.setVisibility(View.GONE);
+                            Toast.makeText(Registration.this, "Congratulation! Your Account has been Created. Please Login into your account."
+                                    + task.getException(), Toast.LENGTH_SHORT).show();
                             String user_id = mAuth.getCurrentUser().getUid();
                             FirebaseDatabase database = FirebaseDatabase.getInstance();
                             myRef = database.getReference().child("Users").child("Handyman").child(user_id);
@@ -153,6 +185,8 @@ public class Registration extends AppCompatActivity {
 
     public void saveHandyman()
     {
+        RegSkill = selectedRadioButton.getText().toString();
+
         Map SavingUser = new HashMap();
         SavingUser.put("FirstName",mFname.getText().toString());
         SavingUser.put("LastName",mLname.getText().toString());
@@ -161,6 +195,7 @@ public class Registration extends AppCompatActivity {
         SavingUser.put("CNIC",mCNIC.getText().toString());
         SavingUser.put("PhoneNumber","+92"+mPhone.getText().toString());
         SavingUser.put("Cost per Hour",costTxt.getText().toString());
+        SavingUser.put("Skill",RegSkill);
         myRef.updateChildren(SavingUser);
 
     }
