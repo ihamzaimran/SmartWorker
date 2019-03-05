@@ -80,8 +80,8 @@ public class LoginActivity extends AppCompatActivity {
                                     if (password.length() < 6) {
                                         password.setError("Please enter correct password");
                                     } else {
-                                            password.setText("");
-                                            email.setText("");
+                                        email.setText("");
+                                        password.setText("");
                                         Toast.makeText(LoginActivity.this, "Authentication failed, check your email and password",
                                                 Toast.LENGTH_LONG).show();
                                     }
@@ -90,6 +90,7 @@ public class LoginActivity extends AppCompatActivity {
                                     Intent intent = new Intent(LoginActivity.this, MapsActivity.class);
                                     startActivity(intent);
                                     finish();
+                                    return;
                                 }
                             }
                         });
@@ -103,6 +104,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent createAccountIntent = new Intent(LoginActivity.this, Registration.class);
                 startActivity(createAccountIntent);
+                return;
             }
         });
 
@@ -112,6 +114,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent forgotPasswordIntent = new Intent(LoginActivity.this, fogotpassword.class);
                 startActivity(forgotPasswordIntent);
+                return;
             }
         });
 

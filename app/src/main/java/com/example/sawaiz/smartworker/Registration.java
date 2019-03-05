@@ -154,15 +154,15 @@ public class Registration extends AppCompatActivity {
 
                         if (!task.isSuccessful()) {
                             progressBar.setVisibility(View.GONE);
-                            Toast.makeText(Registration.this, "Registration failed."
+                            Toast.makeText(Registration.this, "Registration failed. "
                                     + task.getException(), Toast.LENGTH_SHORT).show();
                             createAccount.setEnabled(true);
 
                         } else {
 
                             progressBar.setVisibility(View.GONE);
-                            Toast.makeText(Registration.this, "Congratulation! Your Account has been Created. Please Login into your account."
-                                    + task.getException(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Registration.this, "Please provide a back picture of your CNIC for verification."
+                                    , Toast.LENGTH_SHORT).show();
                             String user_id = mAuth.getCurrentUser().getUid();
                             FirebaseDatabase database = FirebaseDatabase.getInstance();
                             myRef = database.getReference().child("Users").child("Handyman").child(user_id);

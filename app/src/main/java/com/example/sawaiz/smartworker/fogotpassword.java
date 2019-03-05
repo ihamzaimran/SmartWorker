@@ -47,15 +47,19 @@ public class fogotpassword extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            Toast.makeText(fogotpassword.this, "Instructions has been set to your email.", Toast.LENGTH_SHORT).show();
+                            progressBar.setVisibility(View.GONE);
+                            Toast.makeText(fogotpassword.this, "Instructions to reset password has been sent to your email.", Toast.LENGTH_SHORT).show();
                             Intent backToLogin = new Intent(fogotpassword.this, LoginActivity.class);
                             startActivity(backToLogin);
                             finish();
+                            return;
                         } else {
+                            progressBar.setVisibility(View.GONE);
                             Toast.makeText(fogotpassword.this, "Email not found!",
                                     Toast.LENGTH_SHORT).show();
+                            ResetBtn.setEnabled(true);
                         }
-                        progressBar.setVisibility(View.GONE);
+
                     }
                 });
             }

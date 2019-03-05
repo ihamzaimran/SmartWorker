@@ -70,7 +70,7 @@ public class MapsActivity  extends FragmentActivity implements OnMapReadyCallbac
             public void onClick(View v) {
                 isLoggingOut = true;
                 disconnectHandyman();
-                 FirebaseAuth.getInstance().signOut();
+                FirebaseAuth.getInstance().signOut();
                 Intent i = new Intent(MapsActivity.this, LoginActivity.class);
                 startActivity(i);
                 finish();

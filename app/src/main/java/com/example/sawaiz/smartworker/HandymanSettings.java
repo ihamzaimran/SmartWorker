@@ -112,16 +112,12 @@ public class HandymanSettings extends AppCompatActivity {
             public void onClick(View v) {
                 saveHandymanInformation();
                 Toast.makeText(getApplicationContext(), "Changes Saved Successfully.", Toast.LENGTH_SHORT).show();
-                Intent i = new Intent(HandymanSettings.this, MapsActivity.class);
-                startActivity(i);
             }
         });
 
         mBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(HandymanSettings.this, MapsActivity.class);
-                startActivity(i);
                 finish();
                 return;
             }

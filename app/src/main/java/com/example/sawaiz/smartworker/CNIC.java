@@ -106,6 +106,7 @@ public class CNIC extends AppCompatActivity {
                 savingCNIC();
                 Intent loginIntent = new Intent(CNIC.this, LoginActivity.class);
                 startActivity(loginIntent);
+                Toast.makeText(getApplicationContext(),"Congratulations! Your Account has been Created. Please Login into your account.",Toast.LENGTH_SHORT).show();
                 finish();
             }
         });
@@ -180,6 +181,7 @@ public class CNIC extends AppCompatActivity {
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     finish();
+                    Toast.makeText(getApplicationContext(),"Failed to upload pciture to our database. Try again!",Toast.LENGTH_SHORT).show();
                     return;
                 }
             });
@@ -191,7 +193,6 @@ public class CNIC extends AppCompatActivity {
                     Map newImage = new HashMap();
                     newImage.put("CNICImageURL", downloadUrl);
                     myRef.updateChildren(newImage);
-
                     finish();
                     return;
                 }
