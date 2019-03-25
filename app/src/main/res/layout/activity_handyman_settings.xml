@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.sawaiz.smartworker.HandymanSettings"
-    android:background="@color/colorPrimary"
+    android:background="@color/white"
     >
 
 
@@ -15,7 +15,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="10dp"
-
+    android:background="@color/white"
     >
 
     <ImageView
@@ -23,11 +23,24 @@
         android:layout_height="150dp"
         android:id="@+id/profileImage"
         android:src="@drawable/proofile_avatar"
-        android:layout_marginBottom="20dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="5dp"
         android:layout_gravity="center"
         />
 
+    <Button
+        android:id="@+id/profileImageBtn"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@color/colorPrimary"
+        android:text="Update Photo"
+        android:layout_marginBottom="20dp"
+        android:textColor="@color/white"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -39,7 +52,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="First Name: "
-            android:textColor="@color/white"
+            android:textColor="@color/black"
+            android:textStyle="bold"
             android:textSize="15sp"
             />
 
@@ -49,13 +63,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
-            android:backgroundTint="@color/white"
+            android:backgroundTint="@color/black"
             android:layout_marginEnd="5dp"
             android:textSize="15sp"
             android:inputType="textPersonName"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:selectAllOnFocus="false"
-            android:singleLine="true"
             />
 
     </LinearLayout>
@@ -68,7 +81,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Last Name: "
-        android:textColor="@color/white"
+        android:textColor="@color/black"
+        android:textStyle="bold"
         android:textSize="15sp"
         />
 
@@ -78,9 +92,9 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="5dp"
         android:layout_marginBottom="20dp"
-        android:backgroundTint="@color/white"
+        android:backgroundTint="@color/black"
         android:inputType="textPersonName"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:textSize="15sp"
         android:selectAllOnFocus="false"
         android:singleLine="true"
@@ -96,7 +110,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Email Address: "
-            android:textColor="@color/white"
+            android:textColor="@color/black"
+            android:textStyle="bold"
             android:textSize="15sp"
             />
 
@@ -107,7 +122,8 @@
             android:layout_marginBottom="20dp"
             android:layout_marginEnd="5dp"
             android:textSize="15sp"
-            android:textColor="@color/white" />
+            android:textColor="@color/black"
+            />
 
     </LinearLayout>
 
@@ -120,8 +136,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Phone Number: "
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:textSize="15sp"
+        android:textStyle="bold"
         />
 
     <TextView
@@ -129,7 +146,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginEnd="5dp"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:layout_marginBottom="20dp"
         android:textSize="15sp"
         />
@@ -147,7 +164,8 @@
            android:layout_width="wrap_content"
            android:layout_height="wrap_content"
            android:text="CNIC: "
-           android:textColor="@color/white"
+           android:textColor="@color/black"
+           android:textStyle="bold"
            android:textSize="15sp"
            />
 
@@ -156,7 +174,7 @@
            android:layout_width="match_parent"
            android:layout_height="wrap_content"
            android:layout_marginEnd="5dp"
-           android:textColor="@color/white"
+           android:textColor="@color/black"
            android:layout_marginBottom="20dp"
            android:textSize="15sp"
            />
@@ -167,7 +185,8 @@
 <TextView
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:textColor="@color/white"
+    android:textColor="@color/black"
+    android:textStyle="bold"
     android:textSize="15sp"
     android:text="Your Skill is: "
     />
@@ -178,6 +197,8 @@
         android:id="@+id/radioGroupBtnSkills"
         android:orientation="vertical"
         android:textSize="15sp"
+        android:textColor="@color/black"
+        android:buttonTint="@color/colorPrimary"
         >
 
         <RadioButton
@@ -185,24 +206,21 @@
             android:layout_height="wrap_content"
             android:text="Plumber"
             android:id="@+id/sPlumber"
-            android:textColor="@color/white"
-            android:buttonTint="@color/white"
+
             />
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Electrician"
             android:id="@+id/sElectrician"
-            android:textColor="@color/white"
-            android:buttonTint="@color/white"
+
             />
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Gardener"
             android:id="@+id/sGardener"
-            android:textColor="@color/white"
-            android:buttonTint="@color/white"
+
             />
 
         <RadioButton
@@ -210,40 +228,35 @@
             android:layout_height="wrap_content"
             android:text="House Keeper"
             android:id="@+id/sHouseKeeper"
-            android:textColor="@color/white"
-            android:buttonTint="@color/white"
+
             />
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Carpenter"
             android:id="@+id/sCarpenter"
-            android:textColor="@color/white"
-            android:buttonTint="@color/white"
+
             />
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Painter"
             android:id="@+id/sPainter"
-            android:textColor="@color/white"
-            android:buttonTint="@color/white"
+
             />
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Mason"
             android:id="@+id/sMason"
-            android:textColor="@color/white"
-            android:buttonTint="@color/white"
+
             />
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Appliance Repairer"
             android:id="@+id/sApplianceRepairer"
-            android:textColor="@color/white"
-            android:buttonTint="@color/white"
+
             />
 
     </RadioGroup>
@@ -257,7 +270,9 @@
         style="@style/Widget.AppCompat.Button.Borderless.Colored"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#8b9dc3"
+        android:background="@color/colorPrimary"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginTop="20dp"
         android:text="save changes"
         android:textColor="@color/white" />
@@ -268,7 +283,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:background="#8b9dc3"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@color/colorPrimary"
         android:text="Update Password"
         android:textColor="@color/white" />
 
@@ -278,7 +295,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:background="#8b9dc3"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@color/colorPrimary"
         android:text="back"
         android:textColor="@color/white" />
 

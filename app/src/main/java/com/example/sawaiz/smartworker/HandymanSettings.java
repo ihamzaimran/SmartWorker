@@ -1,6 +1,7 @@
 package com.example.sawaiz.smartworker;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -30,6 +31,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -41,12 +43,13 @@ public class HandymanSettings extends AppCompatActivity {
     private EditText fname, lname;
     private TextView email, phone, cnic;
 
-    private Button mBack, mConfirm, mUpdatePass;
+    private Button backBtn, confirmBtn, updatePassBtn,profilePhotoBtn;
 
-    private ImageView mProfileImage;
+    private ImageView profileImageView;
 
     private FirebaseAuth mAuth;
     private DatabaseReference myRef;
+
 
     private String userID;
     private String FName;
@@ -55,7 +58,7 @@ public class HandymanSettings extends AppCompatActivity {
     private String Email;
     private String CNIC;
     private String HandymanSkill;
-    private String mProfileImageUrl;
+    private String profileImageURL;
 
     private Uri resultUri;
 
@@ -73,11 +76,12 @@ public class HandymanSettings extends AppCompatActivity {
         email = (TextView) (findViewById(R.id.email));
         cnic = (TextView) (findViewById(R.id.cnic));
 
-        mProfileImage = (ImageView) findViewById(R.id.profileImage);
+        profileImageView = (ImageView) findViewById(R.id.profileImage);
 
-        mBack = (Button) findViewById(R.id.back);
-        mConfirm = (Button) findViewById(R.id.confirm);
-        mUpdatePass = (Button)(findViewById(R.id.updatePasswordBtn));
+        backBtn = (Button) findViewById(R.id.back);
+        confirmBtn = (Button) findViewById(R.id.confirm);
+        updatePassBtn = (Button)(findViewById(R.id.updatePasswordBtn));
+        profilePhotoBtn = (Button)(findViewById(R.id.profileImageBtn));
 
         HandymanRadioGroup = (RadioGroup)(findViewById(R.id.radioGroupBtnSkills));
 
@@ -88,17 +92,16 @@ public class HandymanSettings extends AppCompatActivity {
         getUserInfo();
 
 
-        mUpdatePass.setOnClickListener(new View.OnClickListener() {
+        updatePassBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(HandymanSettings.this, fogotpassword.class);
                 startActivity(i);
-                finish();
                 return;
             }
         });
 
-        mProfileImage.setOnClickListener(new View.OnClickListener() {
+        profilePhotoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_PICK);
@@ -107,15 +110,16 @@ public class HandymanSettings extends AppCompatActivity {
             }
         });
 
-        mConfirm.setOnClickListener(new View.OnClickListener() {
+        confirmBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 saveHandymanInformation();
                 Toast.makeText(getApplicationContext(), "Changes Saved Successfully.", Toast.LENGTH_SHORT).show();
+                return;
             }
         });
 
-        mBack.setOnClickListener(new View.OnClickListener() {
+        backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
@@ -182,8 +186,8 @@ public class HandymanSettings extends AppCompatActivity {
                     }
 
                     if(map.get("profileImageUrl")!=null){
-                        mProfileImageUrl = map.get("profileImageUrl").toString();
-                        Glide.with(getApplication()).load(mProfileImageUrl).into(mProfileImage);
+                        profileImageURL = map.get("profileImageUrl").toString();
+                        Glide.with(getApplication()).load(profileImageURL).into(profileImageView);
                     }
                 }
             }
@@ -263,7 +267,7 @@ public class HandymanSettings extends AppCompatActivity {
         if(requestCode == 1 && resultCode == Activity.RESULT_OK){
             final Uri imageUri = data.getData();
             resultUri = imageUri;
-            mProfileImage.setImageURI(resultUri);
+            profileImageView.setImageURI(resultUri);
         }
     }
 

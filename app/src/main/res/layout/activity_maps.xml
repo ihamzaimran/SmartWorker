@@ -6,83 +6,66 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     tools:context=".MapsActivity"
-
     >
 
     <fragment
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="416dp"
-        android:layout_height="749dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        map:layout_constraintEnd_toEndOf="parent"
-        map:layout_constraintTop_toTopOf="parent" />
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
-<android.support.constraint.ConstraintLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+
+
 
     <Switch
         android:id="@+id/availabiltySwitch"
-        android:layout_width="127dp"
-        android:layout_height="29dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="Availability"
         android:textColor="@color/black"
         android:textSize="15sp"
         android:textStyle="bold"
-        android:theme="@style/AvailabilitySwitch"
-        map:layout_constraintBottom_toBottomOf="parent"
-        map:layout_constraintEnd_toEndOf="parent"
-        map:layout_constraintHorizontal_bias="0.902"
-        map:layout_constraintStart_toStartOf="parent"
-        map:layout_constraintTop_toTopOf="parent"
-        map:layout_constraintVertical_bias="0.164"
-         />
+        android:layout_marginTop="80dp"
+        android:layout_marginStart="5dp"
+        android:theme="@style/AvailabilitySwitch" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="bottom"
+        >
 
     <Button
-        android:id="@+id/mLogOutBtn"
-        style="@style/Widget.AppCompat.Button.Borderless.Colored"
-        android:layout_width="wrap_content"
+        android:id="@+id/MapMenuBtn"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:background="@color/colorPrimary"
-        android:text="Log out"
-        android:textColor="@color/white"
-        map:layout_constraintBottom_toBottomOf="parent"
-        map:layout_constraintEnd_toEndOf="parent"
-        map:layout_constraintHorizontal_bias="0.788"
-        map:layout_constraintStart_toStartOf="parent"
-        map:layout_constraintTop_toTopOf="parent"
-        map:layout_constraintVertical_bias="0.275"
+        android:background="@color/white"
+        android:text="Main Menu"
+        android:textColor="@color/colorPrimary"
+        android:textAllCaps="false"
         />
 
-
-</android.support.constraint.ConstraintLayout>
-
-
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider" />
 
         <Button
-            android:id="@+id/MapSettingsBtn"
+            android:id="@+id/mLogOutBtn"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
-            android:text="Settings"
-            android:textColor="@color/white"
-            android:layout_gravity="bottom"
+            android:background="@color/white"
+            android:text="Log out"
+            android:textColor="@color/colorPrimary"
+            android:textAllCaps="false"
             />
 
 
 
-
-
+    </LinearLayout>
 
 </FrameLayout>

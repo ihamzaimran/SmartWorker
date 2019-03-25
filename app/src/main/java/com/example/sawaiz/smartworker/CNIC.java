@@ -42,12 +42,9 @@ public class CNIC extends AppCompatActivity {
 
     private Button  backBtn, resetBtn, saveBTn;
     private ImageView backImg;
-    private ProgressBar progressBar;
+
     private static final int TAKE_IMAGE = 0;
     private static final int PERMISSION_CODE = 1000;
-
-    private boolean SwitchingButton1 = false;
-    Uri Image_uri;
     private Uri UriImage;
 
     @Override
@@ -60,7 +57,7 @@ public class CNIC extends AppCompatActivity {
         backBtn = (Button)(findViewById(R.id.backimage_btn));
         resetBtn = (Button)(findViewById(R.id.cnicReset_btn));
         saveBTn = (Button)(findViewById(R.id.cnicSave_Btn));
-        progressBar = (ProgressBar)(findViewById(R.id.cnicBar));
+
 
 
 

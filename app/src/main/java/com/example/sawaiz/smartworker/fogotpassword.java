@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -22,6 +23,7 @@ public class fogotpassword extends AppCompatActivity {
     private EditText forgot_txt;
     private ProgressBar progressBar;
     private FirebaseAuth mAuth;
+    private TextView forgotPasswordBack;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -32,6 +34,14 @@ public class fogotpassword extends AppCompatActivity {
         forgot_txt = (EditText)(findViewById(R.id.forgotPass_txt));
         mAuth = FirebaseAuth.getInstance();
         ResetBtn = (Button)(findViewById(R.id.resetBtn));
+        forgotPasswordBack = (findViewById(R.id.forgotPassBack));
+
+        forgotPasswordBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         ResetBtn.setOnClickListener(new View.OnClickListener() {
             @Override

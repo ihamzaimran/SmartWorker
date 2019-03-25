@@ -1,6 +1,7 @@
 package com.example.sawaiz.smartworker;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -10,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -45,7 +47,7 @@ public class MapsActivity  extends FragmentActivity implements OnMapReadyCallbac
     LocationRequest mLocationRequest;
     private SupportMapFragment mapFragment;
 
-    private Button logoutBtn, SettingsBtn;
+    private Button logoutBtn, mainMenuBtn;
     private Switch availabilitySwitch;
     private boolean isLoggingOut = false;
 
@@ -68,14 +70,34 @@ public class MapsActivity  extends FragmentActivity implements OnMapReadyCallbac
         logoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isLoggingOut = true;
-                disconnectHandyman();
-                FirebaseAuth.getInstance().signOut();
-                Intent i = new Intent(MapsActivity.this, LoginActivity.class);
-                startActivity(i);
-                finish();
-                return;
 
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(MapsActivity.this);
+                alertDialog.setTitle("Confirmation");
+                alertDialog.setMessage("Are you sure you want to log out?");
+
+
+                alertDialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog,int which) {
+                        isLoggingOut = true;
+                        disconnectHandyman();
+                        FirebaseAuth.getInstance().signOut();
+                        Intent i = new Intent(MapsActivity.this, LoginActivity.class);
+                        startActivity(i);
+                        finish();
+                        return;
+
+                    }
+                });
+
+
+                alertDialog.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        dialog.cancel();
+                    }
+                });
+
+                alertDialog.show();
             }
         });
 
@@ -92,11 +114,11 @@ public class MapsActivity  extends FragmentActivity implements OnMapReadyCallbac
             }
         });
 
-        SettingsBtn = (Button)(findViewById(R.id.MapSettingsBtn));
-        SettingsBtn.setOnClickListener(new View.OnClickListener() {
+        mainMenuBtn = (Button)(findViewById(R.id.MapMenuBtn));
+        mainMenuBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(MapsActivity.this, HandymanSettings.class);
+                Intent i = new Intent(MapsActivity.this, MainMenu.class);
                 startActivity(i);
                 return;
             }

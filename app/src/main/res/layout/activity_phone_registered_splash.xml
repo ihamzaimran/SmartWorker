@@ -16,6 +16,7 @@
         android:layout_height="250dp"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
+        android:alpha="0.6"
         android:src="@drawable/phone_verified"
         />
 

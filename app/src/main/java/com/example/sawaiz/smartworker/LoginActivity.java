@@ -47,9 +47,14 @@ public class LoginActivity extends AppCompatActivity {
         email = (EditText)(findViewById(R.id.LoginuserName_txt));
         password = (EditText)(findViewById(R.id.LoginPassword_txt));
 
+        mAuth = FirebaseAuth.getInstance();
+        if (mAuth.getCurrentUser() != null) {
+            startActivity(new Intent(LoginActivity.this, MapsActivity.class));
+            finish();
+        }
 
 
-        startService(new Intent(LoginActivity.this, OnAppKilled.class));
+        //startService(new Intent(LoginActivity.this, onAppKilled.class));
         loginBtn = (Button)(findViewById(R.id.LoginBtn));
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override

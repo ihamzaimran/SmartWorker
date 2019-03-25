@@ -23,13 +23,18 @@
         android:roundIcon="@mipmap/applogolauncher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".HandymanSettings"></activity>
-
-        <service
-            android:name=".OnAppKilled"
-            android:stopWithTask="false" />
-
-        <activity android:name=".CNIC" />
+        <activity android:name=".requestActivity" />
+        <activity android:name=".ProjectsActivity" />
+        <activity
+            android:name=".ComplaintActivitty"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+        <activity android:name=".MainMenu" />
+        <activity
+            android:name=".HandymanSettings"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+        <activity
+            android:name=".CNIC"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity android:name=".StartScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -37,11 +42,21 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Registration" />
-        <activity android:name=".PhoneAuthActivity" />
-        <activity android:name=".LoginActivity" />
-        <activity android:name=".fogotpassword" />
+        <activity
+            android:name=".Registration"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+        <activity
+            android:name=".PhoneAuthActivity"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+        <activity
+            android:name=".LoginActivity"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+        <activity
+            android:name=".fogotpassword"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity android:name=".PhoneRegisteredSplash" />
+
+        <activity android:name=".requestSingleActivity"/>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
