@@ -27,7 +27,8 @@
         android:textStyle="bold"
         android:layout_marginTop="80dp"
         android:layout_marginStart="5dp"
-        android:theme="@style/AvailabilitySwitch" />
+        android:theme="@style/AvailabilitySwitch"
+        android:visibility="invisible"/>
 
 
     <LinearLayout

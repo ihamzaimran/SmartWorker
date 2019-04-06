@@ -18,21 +18,27 @@ import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Map;
 
@@ -40,6 +46,8 @@ public class MapsActivity  extends FragmentActivity implements OnMapReadyCallbac
         GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks,
         com.google.android.gms.location.LocationListener {
 
+    private String userID;
+    public String skill,sk;
 
     private GoogleMap mMap;
     GoogleApiClient mGoogleApiClient;
@@ -50,6 +58,8 @@ public class MapsActivity  extends FragmentActivity implements OnMapReadyCallbac
     private Button logoutBtn, mainMenuBtn;
     private Switch availabilitySwitch;
     private boolean isLoggingOut = false;
+    private FirebaseAuth mAuth;
+    private DatabaseReference myRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +73,10 @@ public class MapsActivity  extends FragmentActivity implements OnMapReadyCallbac
         }else{
             mapFragment.getMapAsync(this);
         }
+
+        mAuth = FirebaseAuth.getInstance();
+        userID = mAuth.getCurrentUser().getUid();
+        myRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Handyman").child(userID);
 
 
 
@@ -79,6 +93,7 @@ public class MapsActivity  extends FragmentActivity implements OnMapReadyCallbac
                 alertDialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog,int which) {
                         isLoggingOut = true;
+
                         disconnectHandyman();
                         FirebaseAuth.getInstance().signOut();
                         Intent i = new Intent(MapsActivity.this, LoginActivity.class);
@@ -123,10 +138,33 @@ public class MapsActivity  extends FragmentActivity implements OnMapReadyCallbac
                 return;
             }
         });
-
+        getUserInfo();
 
     }
 
+
+    private void getUserInfo(){
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists() && dataSnapshot.getChildrenCount()>0){
+                    Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
+
+                    if(map.get("Skill")!=null){
+                        skill = map.get("Skill").toString();
+                        sk=skill+"Available";
+                        availabilitySwitch.setVisibility(View.VISIBLE);
+                        //Toast.makeText(getApplicationContext(),"Everything's Ready Now!",Toast.LENGTH_SHORT).show();
+
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
 
     /**
      * Manipulates the map once available.
@@ -165,12 +203,10 @@ public class MapsActivity  extends FragmentActivity implements OnMapReadyCallbac
             LatLng latLng = new LatLng(location.getLatitude(),location.getLongitude());
 
             mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-            mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
-
-
+            mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
 
             String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("HandymanAvailable");
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child(sk);
 
             GeoFire geoFire = new GeoFire(ref);
             geoFire.setLocation(userId, new GeoLocation(location.getLatitude(), location.getLongitude()));
@@ -226,7 +262,7 @@ public class MapsActivity  extends FragmentActivity implements OnMapReadyCallbac
 
         LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("HandymanAvailable");
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child(sk);
         GeoFire geoFire = new GeoFire(ref);
         geoFire.removeLocation(userId);
     }

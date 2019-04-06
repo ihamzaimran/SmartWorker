@@ -1,15 +1,30 @@
 package com.example.sawaiz.smartworker;
 
+import android.Manifest;
 import android.app.Activity;
-import android.content.Context;
+import android.app.ProgressDialog;
+import android.content.ContentResolver;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.webkit.MimeTypeMap;
+import android.webkit.PermissionRequest;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -19,9 +34,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,25 +50,30 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class HandymanSettings extends AppCompatActivity {
 
     private EditText fname, lname;
     private TextView email, phone, cnic;
 
-    private Button backBtn, confirmBtn, updatePassBtn,profilePhotoBtn;
+    private Button backBtn, confirmBtn, updatePassBtn, profilePhotoBtn,selectPhoto;
 
     private ImageView profileImageView;
 
     private FirebaseAuth mAuth;
-    private DatabaseReference myRef;
-
+    private DatabaseReference myRef, reference;
 
     private String userID;
     private String FName;
@@ -59,16 +83,22 @@ public class HandymanSettings extends AppCompatActivity {
     private String CNIC;
     private String HandymanSkill;
     private String profileImageURL;
-
-    private Uri resultUri;
-
     private RadioGroup HandymanRadioGroup;
 
+    private int GALLERYIMAGE1 = 1;
+    private int CAMERA1 = 11;
+    Uri contentURI;
+    private static final String IMAGE_DIRECTORY = "/ProfilePhoto";
+    String downloadUri;
+
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_handyman_settings);
+
+        progressDialog = new ProgressDialog (this);
 
         fname = (EditText) findViewById(R.id.fname);
         lname = (EditText) findViewById(R.id.lname);
@@ -80,16 +110,27 @@ public class HandymanSettings extends AppCompatActivity {
 
         backBtn = (Button) findViewById(R.id.back);
         confirmBtn = (Button) findViewById(R.id.confirm);
-        updatePassBtn = (Button)(findViewById(R.id.updatePasswordBtn));
-        profilePhotoBtn = (Button)(findViewById(R.id.profileImageBtn));
+        updatePassBtn = (Button) (findViewById(R.id.updatePasswordBtn));
+        profilePhotoBtn = (Button) (findViewById(R.id.profileImageBtn));
+        selectPhoto = (Button)(findViewById(R.id.SelectprofileImageBtn));
 
-        HandymanRadioGroup = (RadioGroup)(findViewById(R.id.radioGroupBtnSkills));
+        HandymanRadioGroup = (RadioGroup) (findViewById(R.id.radioGroupBtnSkills));
 
         mAuth = FirebaseAuth.getInstance();
         userID = mAuth.getCurrentUser().getUid();
+        reference = FirebaseDatabase.getInstance().getReference();
         myRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Handyman").child(userID);
 
         getUserInfo();
+
+        selectPhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent =  new Intent(Intent.ACTION_PICK,
+                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(intent, GALLERYIMAGE1);
+            }
+        });
 
 
         updatePassBtn.setOnClickListener(new View.OnClickListener() {
@@ -104,9 +145,7 @@ public class HandymanSettings extends AppCompatActivity {
         profilePhotoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_PICK);
-                intent.setType("image/*");
-                startActivityForResult(intent, 1);
+              uploadImage();
             }
         });
 
@@ -127,67 +166,68 @@ public class HandymanSettings extends AppCompatActivity {
             }
         });
     }
-    private void getUserInfo(){
+
+    private void getUserInfo() {
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists() && dataSnapshot.getChildrenCount()>0){
+                if (dataSnapshot.exists() && dataSnapshot.getChildrenCount() > 0) {
                     Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
-                    if(map.get("FirstName")!=null){
+                    if (map.get("FirstName") != null) {
                         FName = map.get("FirstName").toString();
                         fname.setText(FName);
                     }
-                    if(map.get("LastName")!=null){
+                    if (map.get("LastName") != null) {
                         LName = map.get("LastName").toString();
                         lname.setText(LName);
                     }
-                    if(map.get("PhoneNumber")!=null){
+                    if (map.get("PhoneNumber") != null) {
                         Phone = map.get("PhoneNumber").toString();
                         phone.setText(Phone);
                     }
-                    if(map.get("EmailAddress")!=null){
+                    if (map.get("EmailAddress") != null) {
                         Email = map.get("EmailAddress").toString();
                         email.setText(Email);
                     }
-                    if(map.get("CNIC")!=null){
+                    if (map.get("CNIC") != null) {
                         CNIC = map.get("CNIC").toString();
                         cnic.setText(CNIC);
                     }
 
-                    if(map.get("Skill")!=null){
+                    if (map.get("Skill") != null) {
                         HandymanSkill = map.get("Skill").toString();
-                        switch (HandymanSkill){
-                            case"Plumber":
+                        switch (HandymanSkill) {
+                            case "Plumber":
                                 HandymanRadioGroup.check(R.id.sPlumber);
                                 break;
-                            case"Electrician":
+                            case "Electrician":
                                 HandymanRadioGroup.check(R.id.sElectrician);
                                 break;
-                            case"Gardener":
+                            case "Gardener":
                                 HandymanRadioGroup.check(R.id.sGardener);
                                 break;
-                            case"House Keeper":
+                            case "HouseKeeper":
                                 HandymanRadioGroup.check(R.id.sHouseKeeper);
                                 break;
-                            case"Carpenter":
+                            case "Carpenter":
                                 HandymanRadioGroup.check(R.id.sCarpenter);
                                 break;
-                            case"Painter":
+                            case "Painter":
                                 HandymanRadioGroup.check(R.id.sPainter);
                                 break;
-                            case"Mason":
+                            case "Mason":
                                 HandymanRadioGroup.check(R.id.sMason);
                                 break;
-                            case"Appliance Repairer":
+                            case "ApplianceRepairer":
                                 HandymanRadioGroup.check(R.id.sApplianceRepairer);
                                 break;
-
                         }
                     }
-
-                    if(map.get("profileImageUrl")!=null){
+                    if (map.get("profileImageUrl") != null) {
                         profileImageURL = map.get("profileImageUrl").toString();
-                        Glide.with(getApplication()).load(profileImageURL).into(profileImageView);
+                            Picasso.get().load(profileImageURL).fit().into(profileImageView);
+                            //Toast.makeText(getApplicationContext(),profileImageURL,Toast.LENGTH_SHORT).show();
+
                     }
                 }
             }
@@ -199,14 +239,13 @@ public class HandymanSettings extends AppCompatActivity {
     }
 
 
-
     private void saveHandymanInformation() {
 
         int HandymanRadioBtnID = HandymanRadioGroup.getCheckedRadioButtonId();
 
         final RadioButton handymanUpdateSkillRadioBtn = (RadioButton) findViewById(HandymanRadioBtnID);
 
-        if (handymanUpdateSkillRadioBtn.getText() == null){
+        if (handymanUpdateSkillRadioBtn.getText() == null) {
             return;
         }
 
@@ -214,61 +253,147 @@ public class HandymanSettings extends AppCompatActivity {
 
 
         Map SavingUser = new HashMap();
-        SavingUser.put("FirstName",fname.getText().toString());
-        SavingUser.put("LastName",lname.getText().toString());
-        SavingUser.put("Skill",HandymanSkill);
+        SavingUser.put("FirstName", fname.getText().toString());
+        SavingUser.put("LastName", lname.getText().toString());
+        SavingUser.put("Skill", HandymanSkill);
         myRef.updateChildren(SavingUser);
+    }
 
 
-        if(resultUri != null) {
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-            StorageReference filePath = FirebaseStorage.getInstance().getReference().child("ProfilePhoto").child(userID);
-            Bitmap bitmap = null;
-            try {
-                bitmap = MediaStore.Images.Media.getBitmap(getApplication().getContentResolver(), resultUri);
-            } catch (IOException e) {
-                e.printStackTrace();
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_CANCELED) {
+            return;
+        }
+        if (requestCode == GALLERYIMAGE1) {
+            if (data != null) {
+                contentURI = data.getData();
+                try {
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(Objects.requireNonNull(getApplication()).getContentResolver(), contentURI);
+                    String path = saveImage(bitmap);
+                    profileImageView.setImageBitmap(bitmap);
+                    profilePhotoBtn.setVisibility(View.VISIBLE);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getApplicationContext(), "Failed!", Toast.LENGTH_SHORT).show();
+                }
             }
 
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 20, baos);
-            byte[] data = baos.toByteArray();
-            UploadTask uploadTask = filePath.putBytes(data);
+        } else{
+            Toast.makeText(getApplicationContext(), "Failed!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    public String saveImage(Bitmap myBitmap) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        myBitmap.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
+        File wallpaperDirectory = new File(
+                Environment.getExternalStorageDirectory() + IMAGE_DIRECTORY);
+        // have the object build the directory structure, if needed.
+        if (!wallpaperDirectory.exists()) {
+            wallpaperDirectory.mkdirs();
+        }
+
+        try {
+            File f = new File(wallpaperDirectory, Calendar.getInstance()
+                    .getTimeInMillis() + ".jpg");
+            f.createNewFile();
+            FileOutputStream fo = new FileOutputStream(f);
+            fo.write(bytes.toByteArray());
+            MediaScannerConnection.scanFile(getApplicationContext(),
+                    new String[]{f.getPath()},
+                    new String[]{"image/jpeg"}, null);
+            fo.close();
+            Log.d("TAG", "File Saved::---&gt;" + f.getAbsolutePath());
+
+            return f.getAbsolutePath();
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+        return "";
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    private String getFileExtenstion(Uri uri) {
+        ContentResolver cr = Objects.requireNonNull(getApplicationContext()).getContentResolver();
+        MimeTypeMap mime = MimeTypeMap.getSingleton();
+        return mime.getExtensionFromMimeType(cr.getType(uri));
+
+
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    private void uploadImage() {
+
+        progressDialog.setMessage("Updating Photo...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+
+        if (contentURI != null) {
+
+            final StorageReference filReference = FirebaseStorage.getInstance().getReference().child("ProfilePhoto").child(userID);
+
+            final UploadTask uploadTask = filReference.putFile(contentURI);
+
 
             uploadTask.addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    finish();
-                    return;
+                    Toast.makeText(getApplicationContext(), "Upload failed.",
+                            Toast.LENGTH_SHORT).show();
+
+                    progressDialog.dismiss();
                 }
-            });
-            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    String downloadUrl = taskSnapshot.getMetadata().getReference().getDownloadUrl().toString();
 
-                    Map newImage = new HashMap();
-                    newImage.put("profileImageUrl", downloadUrl);
-                    myRef.updateChildren(newImage);
+                    Task<Uri> task = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                        @Override
+                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                            if (!task.isSuccessful()) {
+                                Toast.makeText(getApplicationContext(), "Upload failed.",
+                                        Toast.LENGTH_SHORT).show();
 
-                    finish();
-                    return;
+                                progressDialog.dismiss();
+                                throw task.getException();
+                            }
+                            downloadUri = filReference.getDownloadUrl().toString();
+                            return filReference.getDownloadUrl();
+                        }
+                    }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Uri> task) {
+                            if (task.isSuccessful()) {
+
+                                downloadUri = task.getResult().toString();
+                                Map newImage = new HashMap();
+                                newImage.put("profileImageUrl", downloadUri);
+                                myRef.updateChildren(newImage);
+                                Toast.makeText(getApplicationContext(), "Image Uploaded Successfully",
+                                        Toast.LENGTH_SHORT).show();
+
+                                progressDialog.dismiss();
+
+                                //mDatabaseRef1.child(Chefname).setValue("null");
+                            }
+                        }
+                    });
                 }
             });
-        }else{
-            finish();
+
+        }
+       else {
+           return;
         }
 
-    }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 1 && resultCode == Activity.RESULT_OK){
-            final Uri imageUri = data.getData();
-            resultUri = imageUri;
-            profileImageView.setImageURI(resultUri);
-        }
     }
-
 }
+

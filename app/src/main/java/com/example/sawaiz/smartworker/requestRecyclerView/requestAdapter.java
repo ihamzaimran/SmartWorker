@@ -6,13 +6,17 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.sawaiz.smartworker.R;
+import com.example.sawaiz.smartworker.requestActivity;
 
 import java.util.List;
 
 public class requestAdapter extends RecyclerView.Adapter<requestViewHolder> {
     private List<requestObject> itemList;
+    private List<String> listNames;
+    private requestActivity reqActivity;
     private Context context;
 
     public requestAdapter(List<requestObject> itemList, Context context){
@@ -33,7 +37,18 @@ public class requestAdapter extends RecyclerView.Adapter<requestViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull requestViewHolder requestViewHolder, int i) {
-        requestViewHolder.name.setText(itemList.get(i).getFirstName()+" "+itemList.get(i).getLastName());
+
+        reqActivity = new requestActivity();
+        //List<String> list = reqActivity.getListNames();
+
+       // String name = itemList.get(i).getFirstName();
+        String Date =  itemList.get(i).getDate();
+        String Time = itemList.get(i).getTime();
+        String Key = itemList.get(i).getKey();
+            requestViewHolder.datentime.setText(i + 1 + ". You've a new job request request on " + Date + " at " + Time);
+            requestViewHolder.key.setText(Key);
+
+
     }
 
     @Override

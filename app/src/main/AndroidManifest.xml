@@ -55,8 +55,7 @@
             android:name=".fogotpassword"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity android:name=".PhoneRegisteredSplash" />
-
-        <activity android:name=".requestSingleActivity"/>
+        <activity android:name=".requestSingleActivity" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").

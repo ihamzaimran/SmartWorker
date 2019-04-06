@@ -6,6 +6,9 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 
 /**
@@ -13,6 +16,7 @@ import android.view.ViewGroup;
  */
 public class pastProjectsFragment extends Fragment {
 
+    private TextView txt;
 
     public pastProjectsFragment() {
         // Required empty public constructor
@@ -23,7 +27,10 @@ public class pastProjectsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_past_projects, container, false);
+        View view = inflater.inflate(R.layout.fragment_past_projects, container, false);
+
+
+        return view;
     }
 
 }

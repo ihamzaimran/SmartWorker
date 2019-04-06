@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="Past Projects"
+        android:id="@+id/id2"
         android:textColor="@color/black"
         android:textSize="30sp"
         android:gravity="center"/>

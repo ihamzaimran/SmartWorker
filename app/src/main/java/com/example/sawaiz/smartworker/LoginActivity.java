@@ -40,8 +40,6 @@ public class LoginActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-
-
         progressBar = (ProgressBar)(findViewById(R.id.LogprogressBar));
 
         email = (EditText)(findViewById(R.id.LoginuserName_txt));
@@ -85,7 +83,6 @@ public class LoginActivity extends AppCompatActivity {
                                     if (password.length() < 6) {
                                         password.setError("Please enter correct password");
                                     } else {
-                                        email.setText("");
                                         password.setText("");
                                         Toast.makeText(LoginActivity.this, "Authentication failed, check your email and password",
                                                 Toast.LENGTH_LONG).show();

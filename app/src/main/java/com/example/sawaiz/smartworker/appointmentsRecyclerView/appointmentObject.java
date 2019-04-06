@@ -1,20 +1,18 @@
-package com.example.sawaiz.smartworker.requestRecyclerView;
+package com.example.sawaiz.smartworker.appointmentsRecyclerView;
 
-public class requestObject {
+public class appointmentObject {
 
     private String FirstName, LastName, PhoneNumber, Date, Time,Key;
 
 
-    public requestObject(String Date,String Time, String Key) {
-        //this.FirstName = FirstName;
-        //this.LastName = LastName;
+    public appointmentObject(String FirstName, String LastName, String PhoneNumber, String Date, String Time, String Key) {
+        this.FirstName = FirstName;
+        this.LastName = LastName;
         this.Date = Date;
         this.Time =Time;
-        //this.PhoneNumber = PhoneNumber;
+        this.PhoneNumber = PhoneNumber;
         this.Key = Key;
     }
-
-    /*
 
     public String getFirstName() {
         return FirstName;
@@ -39,8 +37,6 @@ public class requestObject {
     public void setPhoneNumber(String phoneNumber) {
         PhoneNumber = phoneNumber;
     }
-
-    */
 
     public String getDate() {
         return Date;
