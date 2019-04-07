@@ -26,18 +26,42 @@
         <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
         android:id="@+id/requestinfo"
+            android:text="You've have a new job request"
         android:textColor="@color/white"
         />
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/requestDate"
+                android:textColor="@color/white"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/requestTime"
+                android:textColor="@color/white"
+                />
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
     <TextView
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:id="@+id/requestKey"
-        android:textColor="@color/black"
-        android:visibility="invisible"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/requestID"
+        android:text="Request ID: "
+        android:textColor="@color/white"
         />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/requestKey"
+       android:textColor="@color/white"
+        />
+</LinearLayout>
 
         </LinearLayout>
     </android.support.v7.widget.CardView>

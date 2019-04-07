@@ -57,6 +57,8 @@ public class Registration extends AppCompatActivity {
 
         RegradioGroup = (RadioGroup)(findViewById(R.id.RegradioBtnSkills));
 
+        Intent phoneintent = getIntent();
+        mPhone.setText(phoneintent.getStringExtra("Phone1"));
 
         createAccount = (Button)(findViewById(R.id.rCreateAccountBtn));
         createAccount.setOnClickListener(new View.OnClickListener() {
@@ -115,16 +117,7 @@ public class Registration extends AppCompatActivity {
                             Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (TextUtils.isEmpty(phone)) {
-                    Toast.makeText(getApplicationContext(), "Enter CONTACT NO!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
 
-                if (phone.length() > 10 || phone.length() <10 ) {
-                    mPhone.setError("Invalid Phone Number!");
-                    Toast.makeText(getApplicationContext(), "Invalid Phone Number", Toast.LENGTH_SHORT).show();
-                    return;
-                }
 
             if(TextUtils.isEmpty(Cost)){
                 costTxt.setError("Cannot be empty!");
@@ -193,7 +186,7 @@ public class Registration extends AppCompatActivity {
         SavingUser.put("EmailAddress",mEmail.getText().toString());
         SavingUser.put("PhoneNumber",mPhone.getText().toString());
         SavingUser.put("CNIC",mCNIC.getText().toString());
-        SavingUser.put("PhoneNumber","+92"+mPhone.getText().toString());
+        SavingUser.put("PhoneNumber",mPhone.getText().toString());
         SavingUser.put("CostPerHour",costTxt.getText().toString());
         SavingUser.put("Skill",RegSkill);
         myRef.updateChildren(SavingUser);

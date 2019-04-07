@@ -35,8 +35,8 @@ public class appointmentAdapter extends RecyclerView.Adapter<appointmentViewHold
 
     @Override
     public void onBindViewHolder(@NonNull appointmentViewHolder appointmentViewHolder, int i) {
-        String name = itemList.get(i).getFirstName()+" "+itemList.get(i).getLastName();
-        appointmentViewHolder.name.setText(i+1+". You've an appointment with "+name+" on "+itemList.get(i).getDate()+" at "+itemList.get(i).getTime());
+
+        appointmentViewHolder.name.setText(i+1+". You've an appointment on "+itemList.get(i).getDate()+" at "+itemList.get(i).getTime());
         appointmentViewHolder.key.setText(itemList.get(i).getKey());
 
     }

@@ -176,18 +176,6 @@
                 android:textColor="@color/black"
                 android:textStyle="bold"
                 />
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
-    <TextView
-        android:id="@+id/RCountryCode"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="+92"
-        android:textColor="@color/black"
-        android:textStyle="bold"
-        android:textSize="14sp"/>
 
     <EditText
         android:id="@+id/rPhoneNo_txt"
@@ -204,9 +192,10 @@
         android:textColor="@color/black"
         android:textSize="14sp"
         android:selectAllOnFocus="false"
-        android:singleLine="true" />
+        android:drawableRight="@mipmap/verified"
+        android:singleLine="true"
+        android:enabled="false"/>
 
-</LinearLayout>
 
             <TextView
                 android:id="@+id/EC_info_lbl"

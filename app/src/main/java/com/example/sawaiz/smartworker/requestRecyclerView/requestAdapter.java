@@ -15,8 +15,6 @@ import java.util.List;
 
 public class requestAdapter extends RecyclerView.Adapter<requestViewHolder> {
     private List<requestObject> itemList;
-    private List<String> listNames;
-    private requestActivity reqActivity;
     private Context context;
 
     public requestAdapter(List<requestObject> itemList, Context context){
@@ -37,15 +35,13 @@ public class requestAdapter extends RecyclerView.Adapter<requestViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull requestViewHolder requestViewHolder, int i) {
-
-        reqActivity = new requestActivity();
-        //List<String> list = reqActivity.getListNames();
-
-       // String name = itemList.get(i).getFirstName();
-        String Date =  itemList.get(i).getDate();
-        String Time = itemList.get(i).getTime();
+        String Date = "Date: "+ itemList.get(i).getDate();
+        String Time = "Time: " +itemList.get(i).getTime();
         String Key = itemList.get(i).getKey();
-            requestViewHolder.datentime.setText(i + 1 + ". You've a new job request request on " + Date + " at " + Time);
+
+
+            requestViewHolder.date.setText(Date);
+            requestViewHolder.time.setText(Time);
             requestViewHolder.key.setText(Key);
 
 

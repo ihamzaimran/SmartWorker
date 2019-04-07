@@ -2,16 +2,16 @@ package com.example.sawaiz.smartworker.requestRecyclerView;
 
 public class requestObject {
 
-    private String FirstName, LastName, PhoneNumber, Date, Time,Key;
+    private String FirstName, LastName, PhoneNumber, Date, Time,CustomerId;
 
 
-    public requestObject(String Date,String Time, String Key) {
+    public requestObject(String Date,String Time,String CustomerId) {
         //this.FirstName = FirstName;
         //this.LastName = LastName;
         this.Date = Date;
         this.Time =Time;
         //this.PhoneNumber = PhoneNumber;
-        this.Key = Key;
+        this.CustomerId = CustomerId;
     }
 
     /*
@@ -59,10 +59,10 @@ public class requestObject {
     }
 
     public String getKey() {
-        return Key;
+        return CustomerId;
     }
 
-    public void setKey(String key) {
-        Key = key;
+    public void setKey(String CustomerId) {
+        this.CustomerId = CustomerId;
     }
 }

@@ -12,17 +12,17 @@ import com.example.sawaiz.smartworker.requestSingleActivity;
 
 public class requestViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-    public TextView datentime,key;
+    public TextView date,time,key,info;
 
     public requestViewHolder(@NonNull View itemView) {
         super(itemView);
         itemView.setOnClickListener(this);
 
-        datentime = (TextView)itemView.findViewById(R.id.requestinfo);
+        date = (TextView)itemView.findViewById(R.id.requestDate);
+        time = (TextView)itemView.findViewById(R.id.requestTime);
         key = (TextView)itemView.findViewById(R.id.requestKey);
-
+        info = (TextView)itemView.findViewById(R.id.requestinfo);
     }
-
 
 
     @Override

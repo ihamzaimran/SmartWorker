@@ -104,7 +104,7 @@ public class LoginActivity extends AppCompatActivity {
         createAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent createAccountIntent = new Intent(LoginActivity.this, Registration.class);
+                Intent createAccountIntent = new Intent(LoginActivity.this, PhoneAuthActivity.class);
                 startActivity(createAccountIntent);
                 return;
             }

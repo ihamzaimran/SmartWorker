@@ -43,9 +43,9 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
-public class requestSingleActivity extends AppCompatActivity implements OnMapReadyCallback{
+public class futureSingleProfileView extends AppCompatActivity implements OnMapReadyCallback{
 
-    String userId,customerId,handymanId,name,latlng, lat,lng,date,time;
+    String userId,customerId,handymanId,name,latlng, lat,lng,date,time,Key;
 
     private TextView userName;
     private TextView userPhone;
@@ -72,12 +72,12 @@ public class requestSingleActivity extends AppCompatActivity implements OnMapRea
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.requestsingleactivity);
+        setContentView(R.layout.activity_future_single_profile_view);
 
         mMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(requestSingleActivity.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST_CODE);
+            ActivityCompat.requestPermissions(futureSingleProfileView.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST_CODE);
         }else{
             mMapFragment.getMapAsync(this);
         }
@@ -91,11 +91,11 @@ public class requestSingleActivity extends AppCompatActivity implements OnMapRea
 
 
         Intent i = getIntent();
-        final String Key = i.getStringExtra("key");
+        Key = i.getStringExtra("key");
 
         userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        mydbref = FirebaseDatabase.getInstance().getReference().child("AppointmentRequests").child(Key);
+        mydbref = FirebaseDatabase.getInstance().getReference().child("FutureAppointments").child(Key);
 
         getUserRequestInfo();
 
@@ -103,46 +103,33 @@ public class requestSingleActivity extends AppCompatActivity implements OnMapRea
         progressDialog.setMessage("Loading...");
         progressDialog.show();
 
-        accept = (Button)(findViewById(R.id.ReqAccept));
+
         reject = (Button)(findViewById(R.id.ReqReject));
 
-        accept.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                DatabaseReference handyman = FirebaseDatabase.getInstance().getReference().child("Users").child("Handyman").child(userId).child("FutureAppointments");
-                DatabaseReference customerDB = FirebaseDatabase.getInstance().getReference().child("Users").child("Customer").child(customerId).child("FutureAppointments");
-                DatabaseReference myDBref1 = FirebaseDatabase.getInstance().getReference().child("FutureAppointments");
-                String FutureAppointmentsId = myDBref1.push().getKey();
-                handyman.child(FutureAppointmentsId).setValue(true);
-                customerDB.child(FutureAppointmentsId).setValue(true);
-
-                Map data = new HashMap();
-                data.put("HandymanId",userId);
-                data.put("Date",date);
-                data.put("Time",time);
-                data.put("CustomerId",customerId);
-                data.put("CustomerLocation/lat",lat);
-                data.put("CustomerLocation/lat",lng);
-                myDBref1.child(FutureAppointmentsId).updateChildren(data);
-
-                db =  FirebaseDatabase.getInstance().getReference().child("AppointmentRequests").child(Key);
-                hdb = FirebaseDatabase.getInstance().getReference().child("Users").child("Handyman").child(userId).child("RequestList").child(Key);
-                cdb =  FirebaseDatabase.getInstance().getReference().child("Users").child("Customer").child(customerId).child("RequestList").child(Key);
-
-                hdb.removeValue();
-                cdb.removeValue();
-                db.removeValue();
-                finish();
-            }
-        });
 
         reject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                db =  FirebaseDatabase.getInstance().getReference().child("AppointmentRequests").child(Key);
-                hdb = FirebaseDatabase.getInstance().getReference().child("Users").child("Handyman").child(userId).child("RequestList").child(Key);
-                cdb =  FirebaseDatabase.getInstance().getReference().child("Users").child("Customer").child(customerId).child("RequestList").child(Key);
+                String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                DatabaseReference handyman = FirebaseDatabase.getInstance().getReference().child("Users").child("Handyman").child(userId).child("CancelRequestsList");
+                DatabaseReference customerDB = FirebaseDatabase.getInstance().getReference().child("Users").child("Customer").child(customerId).child("CancelRequestsList");
+                DatabaseReference myDBref1 = FirebaseDatabase.getInstance().getReference().child("CancelRequests");
+                String cancelRequestsID = myDBref1.push().getKey();
+                handyman.child(cancelRequestsID).setValue(true);
+                customerDB.child(cancelRequestsID).setValue(true);
+
+                Map data = new HashMap();
+                data.put("HandymanId",userId);
+                data.put("CustomerId",customerId);
+                data.put("Date",date);
+                data.put("Time",time);
+
+
+                myDBref1.child(cancelRequestsID).updateChildren(data);
+
+                db =  FirebaseDatabase.getInstance().getReference().child("FutureAppointments").child(Key);
+                hdb = FirebaseDatabase.getInstance().getReference().child("Users").child("Handyman").child(userId).child("FutureAppointments").child(Key);
+                cdb =  FirebaseDatabase.getInstance().getReference().child("Users").child("Customer").child(customerId).child("FutureAppointments").child(Key);
 
                 hdb.removeValue();
                 cdb.removeValue();
@@ -160,7 +147,7 @@ public class requestSingleActivity extends AppCompatActivity implements OnMapRea
                     for (DataSnapshot child:dataSnapshot.getChildren()){
                         if (child.getKey().equals("CustomerId")){
                             customerId = child.getValue().toString();
-                                getUserInformation("Customer", customerId);
+                            getUserInformation("Customer", customerId);
                         }
 
                         if (child.getKey().equals("HandymanId")){
@@ -175,16 +162,18 @@ public class requestSingleActivity extends AppCompatActivity implements OnMapRea
                             time = child.getValue().toString();
                             usertime.setText(child.getValue().toString());
                         }
+                        /*
                         if (child.getKey().equals("CustomerLocation")){
-                            lat = child.child("Latitude").getValue().toString();
+                            //lat = child.child("Latitude").getValue().toString();
                             //Log.e("lat: ",lat);
                             //Toast.makeText(getApplicationContext(),"lat: "+lat,Toast.LENGTH_LONG).show();
-                            lng = lat = child.child("Longitude").getValue().toString();
+                            //lng = lat = child.child("Longitude").getValue().toString();
                             locationLatLng = new LatLng(Double.valueOf(child.child("Latitude").getValue().toString()),Double.valueOf(child.child("Longitude").getValue().toString()));
-                            if(locationLatLng != new LatLng(0,0)) {
-                                MarkeratCustomerLocation();
-                            }
+                             if(locationLatLng != new LatLng(0,0)) {
+                                 MarkeratCustomerLocation();
+                             }
                         }
+                        */
                     }
                 }
             }
@@ -243,7 +232,7 @@ public class requestSingleActivity extends AppCompatActivity implements OnMapRea
         mMap = googleMap;
 
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(requestSingleActivity.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST_CODE);
+            ActivityCompat.requestPermissions(futureSingleProfileView.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST_CODE);
         }
 
         mMap.setMyLocationEnabled(true);
@@ -264,6 +253,4 @@ public class requestSingleActivity extends AppCompatActivity implements OnMapRea
             }
         }
     }
-
-
 }

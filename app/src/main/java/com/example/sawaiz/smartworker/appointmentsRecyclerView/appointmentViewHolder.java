@@ -8,7 +8,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.sawaiz.smartworker.R;
-import com.example.sawaiz.smartworker.requestSingleActivity;
+import com.example.sawaiz.smartworker.futureSingleProfileView;
+
 
 public class appointmentViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
@@ -27,10 +28,10 @@ public class appointmentViewHolder extends RecyclerView.ViewHolder implements Vi
 
     @Override
     public void onClick(View v) {
-        /*
-        Intent intent = new Intent(v.getContext(), requestSingleActivity.class);
+
+        Intent intent = new Intent(v.getContext(), futureSingleProfileView.class);
         intent.putExtra("key", key.getText().toString());
         v.getContext().startActivity(intent);
-*/
+
     }
 }

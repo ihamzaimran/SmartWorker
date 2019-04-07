@@ -5,15 +5,13 @@ public class appointmentObject {
     private String FirstName, LastName, PhoneNumber, Date, Time,Key;
 
 
-    public appointmentObject(String FirstName, String LastName, String PhoneNumber, String Date, String Time, String Key) {
-        this.FirstName = FirstName;
-        this.LastName = LastName;
+    public appointmentObject(String Date, String Time, String Key) {
+
         this.Date = Date;
         this.Time =Time;
-        this.PhoneNumber = PhoneNumber;
         this.Key = Key;
     }
-
+/*
     public String getFirstName() {
         return FirstName;
     }
@@ -37,6 +35,8 @@ public class appointmentObject {
     public void setPhoneNumber(String phoneNumber) {
         PhoneNumber = phoneNumber;
     }
+
+*/
 
     public String getDate() {
         return Date;

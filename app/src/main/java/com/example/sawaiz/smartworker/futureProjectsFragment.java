@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import com.example.sawaiz.smartworker.appointmentsRecyclerView.appointmentAdapter;
 import com.example.sawaiz.smartworker.appointmentsRecyclerView.appointmentObject;
 
+import com.example.sawaiz.smartworker.requestRecyclerView.requestObject;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -35,7 +36,7 @@ public class futureProjectsFragment extends Fragment {
     private RecyclerView.Adapter mAppointmentAdapter;
     private RecyclerView.LayoutManager appointmentLayoutManager;
 
-    private String userId,fname,lname,currentUserId, customerId,date,time,Key,phone;
+    private String userId,customerId,date,time,Key,k;
 
     public futureProjectsFragment() {
         // Required empty public constructor
@@ -71,114 +72,57 @@ public class futureProjectsFragment extends Fragment {
                 resultRequest.clear();
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                        FetchRequestInformation(ds.getKey());
-                    }
-                }
+                        k = ds.getKey();
+                        DatabaseReference mydbref1 = FirebaseDatabase.getInstance().getReference().child("FutureAppointments").child(k);
+                        mydbref1.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                if (dataSnapshot.exists()) {
+                                    Key = dataSnapshot.getKey();
 
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-
-    private void FetchRequestInformation(final String key) {
-        DatabaseReference mydbref = FirebaseDatabase.getInstance().getReference().child("FutureAppointments").child(key);
-        mydbref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                if (dataSnapshot.exists()) {
-                    Key = dataSnapshot.getKey();
-
-                    for (DataSnapshot child : dataSnapshot.getChildren()) {
-
-                        if (child.getKey().equals("Time")) {
-                            time = child.getValue().toString();
-                            //Log.e("time: ",time);
-                        }
-                        if (child.getKey().equals("Date")) {
-                            date = child.getValue().toString();
-                            //Log.e("date: ",date);
-                        }
-                        if (child.getKey().equals("CustomerId")) {
-                            customerId = child.getValue().toString();
-                            DatabaseReference mOtherUserDB = FirebaseDatabase.getInstance().getReference().child("Users").child("Customer").child(customerId);
-                            mOtherUserDB.addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    if(dataSnapshot.exists()){
-
-                                        Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
-                                        if(map.get("FirstName") != null){
-                                            fname = map.get("FirstName").toString();
+                                    for (DataSnapshot child : dataSnapshot.getChildren()) {
+                                        if (child.getKey().equals("Time")) {
+                                            time = child.getValue().toString();
+                                            //Log.e("time: ",time);
                                         }
-                                        if(map.get("PhoneNumber") != null){
-                                            phone = map.get("PhoneNumber").toString();
+                                        if (child.getKey().equals("Date")) {
+                                            date = child.getValue().toString();
+                                            //Log.e("date: ",date);
                                         }
-                                        if(map.get("LastName") != null){
-                                            lname = map.get("LastName").toString();
+                                        if (child.getKey().equals("CustomerId")) {
+                                            customerId = child.getValue().toString();
                                         }
-
                                     }
+
+                                    Log.e("Cid: ", customerId);
+                                    appointmentObject obj = new appointmentObject(date,time,Key);
+                                    resultRequest.add(obj);
+                                    mAppointmentAdapter.notifyDataSetChanged();
+                                    //progressDialog.dismiss();
+
                                 }
+                            }
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                                }
-                            });
-                           // getUserInformation("Customer", customerId,key,date,time);
-                        }
+                            }
+                        });
 
-                  }
-                    Log.e("name: ",fname+" "+lname);
-                    Log.e("date: ",date);
-                    Log.e("time",time);
-                    appointmentObject obj = new appointmentObject(fname,lname,phone,date,time,key);
-                    resultRequest.add(obj);
-                    mAppointmentAdapter.notifyDataSetChanged();
+                    }
+
                 }
+                //progressDialog.dismiss();
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Log.d("Database Error: ",databaseError.getMessage());
             }
         });
+        //progressDialog.dismiss();
     }
 
-    private void getUserInformation(String Customer, String otherUserId, final String key, String Date,  String Time ) {
-        DatabaseReference mOtherUserDB = FirebaseDatabase.getInstance().getReference().child("Users").child("Customer").child(otherUserId);
-        mOtherUserDB.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
 
-                if(dataSnapshot.exists()){
-                    Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
-                    if(map.get("FirstName") != null){
-                        fname = map.get("FirstName").toString();
-                    }
-                    if(map.get("PhoneNumber") != null){
-                        phone = map.get("PhoneNumber").toString();
-                    }
-                    if(map.get("LastName") != null){
-                        lname = map.get("LastName").toString();
-                    }
-                   // Log.e("date: ",date);
-                    //Log.e("time",time);
-                   // appointmentObject obj = new appointmentObject(fname,lname,phone,date,time,key);
-                    //resultRequest.add(obj);
-                    //mAppointmentAdapter.notifyDataSetChanged();
-                }
-
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
-    }
 
     private ArrayList resultRequest = new ArrayList<appointmentObject>();
     private List<appointmentObject> getDataSetRequest() {
