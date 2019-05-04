@@ -376,12 +376,11 @@ public class HandymanSettings extends AppCompatActivity {
                                 Map newImage = new HashMap();
                                 newImage.put("profileImageUrl", downloadUri);
                                 myRef.updateChildren(newImage);
+                                progressDialog.dismiss();
                                 Toast.makeText(getApplicationContext(), "Image Uploaded Successfully",
                                         Toast.LENGTH_SHORT).show();
 
-                                progressDialog.dismiss();
 
-                                //mDatabaseRef1.child(Chefname).setValue("null");
                             }
                         }
                     });

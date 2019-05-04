@@ -44,17 +44,6 @@
                 android:id="@+id/requestTime"
                 android:textColor="@color/white"
                 />
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal">
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/requestID"
-        android:text="Request ID: "
-        android:textColor="@color/white"
-        />
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -63,7 +52,6 @@
         />
 </LinearLayout>
 
-        </LinearLayout>
     </android.support.v7.widget.CardView>
 
 </LinearLayout>
