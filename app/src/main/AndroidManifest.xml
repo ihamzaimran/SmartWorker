@@ -9,6 +9,8 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.SET_ALARM" />
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
@@ -23,7 +25,9 @@
         android:roundIcon="@mipmap/applogolauncher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".futureSingleProfileView"></activity>
+        <activity android:name=".notify"></activity>
+        <activity android:name=".Notifications" />
+        <activity android:name=".futureSingleProfileView" />
         <activity android:name=".requestActivity" />
         <activity android:name=".ProjectsActivity" />
         <activity
@@ -72,6 +76,12 @@
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps" />
+
+        <receiver android:name=".TaskReminderReceiver">
+            <intent-filter>
+                <action android:name="Display_Notifications" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

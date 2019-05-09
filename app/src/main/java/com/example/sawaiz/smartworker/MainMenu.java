@@ -70,7 +70,9 @@ public class MainMenu extends AppCompatActivity {
         mNotifications.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent i =  new Intent(MainMenu.this, Notifications.class);
+                startActivity(i);
+                return;
             }
         });
 

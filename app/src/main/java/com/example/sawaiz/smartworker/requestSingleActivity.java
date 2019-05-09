@@ -1,5 +1,7 @@
 package com.example.sawaiz.smartworker;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -38,14 +40,20 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class requestSingleActivity extends AppCompatActivity implements OnMapReadyCallback{
 
-    String userId,customerId,handymanId,name,latlng, lat,lng,date,time;
+    String userId,customerId,handymanId,name,latlng, lat,lng,date,time,timeuser,myTime;
+
+    private int hour, minute,reqcode;
 
     private TextView userName;
     private TextView userPhone;
@@ -63,6 +71,8 @@ public class requestSingleActivity extends AppCompatActivity implements OnMapRea
     private DatabaseReference mydbref,hdb,cdb,db;
 
     private ProgressDialog progressDialog;
+
+    private long timeInMs;
 
     private GoogleMap mMap;
     private SupportMapFragment mMapFragment;
@@ -130,10 +140,63 @@ public class requestSingleActivity extends AppCompatActivity implements OnMapRea
                 hdb = FirebaseDatabase.getInstance().getReference().child("Users").child("Handyman").child(userId).child("RequestList").child(Key);
                 cdb =  FirebaseDatabase.getInstance().getReference().child("Users").child("Customer").child(customerId).child("RequestList").child(Key);
 
+
+                Calendar c = Calendar.getInstance();
+                reqcode = (int)c.getTimeInMillis();
+
+                AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+                Intent intent = new Intent(requestSingleActivity.this, TaskReminderReceiver.class);
+
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                        getApplicationContext(), reqcode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+
+
+                timeuser = time;
+                Log.e("time: " ,timeuser);
+
+                String timme = timeuser;
+                String[] time = timme.split ( ":" );
+                 hour = Integer.parseInt ( time[0].trim() );
+                 minute = Integer.parseInt ( time[1].trim() );
+                 Log.e("hourxmin", hour+" "+minute);
+                 myTime = String.valueOf(hour) + ":" + String.valueOf(minute);
+
+                Date date = null;
+
+                // today at your defined time Calendar
+                Calendar cal = new GregorianCalendar();
+                // set hours and minutes
+                cal.set(Calendar.HOUR_OF_DAY, hour);
+                cal.set(Calendar.MINUTE, minute);
+                cal.set(Calendar.SECOND, 0);
+                cal.set(Calendar.MILLISECOND, 0);
+
+                Date customDate = cal.getTime();
+
+                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
+                try {
+                      date = sdf.parse(myTime);
+
+                } catch (ParseException e) {
+
+                    e.printStackTrace();
+                }
+
+
+                if (date != null) {
+                    timeInMs = customDate.getTime();
+                }
+
+                alarmManager.set(AlarmManager.RTC_WAKEUP, timeInMs,pendingIntent);
+
+                Toast.makeText(requestSingleActivity.this, "Alarm set",Toast.LENGTH_LONG).show();
+
+                finish();
+
                 hdb.removeValue();
                 cdb.removeValue();
                 db.removeValue();
-                finish();
             }
         });
 
