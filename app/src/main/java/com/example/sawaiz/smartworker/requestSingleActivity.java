@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.sawaiz.smartworker.Utils.SendNotification;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
@@ -51,9 +52,9 @@ import java.util.Map;
 
 public class requestSingleActivity extends AppCompatActivity implements OnMapReadyCallback{
 
-    String userId,customerId,handymanId,name,latlng, lat,lng,date,time,timeuser,myTime;
+    String userId,customerId,handymanId,name,latlng, lat,lng,date,time,timeuser,myTime,notificationKey;
 
-    private int hour, minute,reqcode;
+    private int hour, minute,reqcode,year,month,day;
 
     private TextView userName;
     private TextView userPhone;
@@ -141,6 +142,18 @@ public class requestSingleActivity extends AppCompatActivity implements OnMapRea
                 cdb =  FirebaseDatabase.getInstance().getReference().child("Users").child("Customer").child(customerId).child("RequestList").child(Key);
 
 
+
+                String msg = "Your appointment request have been accepted for "+date+", "+time+". ";
+                new SendNotification(msg,"Appointment Request",notificationKey);
+
+                DatabaseReference dbref4 = FirebaseDatabase.getInstance().getReference().child("Users").child("Customer").child(customerId).child("Notification");
+                String RequestID1 = dbref4.push().getKey();
+                dbref4.child(RequestID1).setValue(true);
+                DatabaseReference dbref5 = FirebaseDatabase.getInstance().getReference().child("Users").child("Customer").child(customerId).child("Notification").child(RequestID1);
+                dbref5.child("Message").setValue(msg);
+
+
+
                 Calendar c = Calendar.getInstance();
                 reqcode = (int)c.getTimeInMillis();
 
@@ -162,10 +175,20 @@ public class requestSingleActivity extends AppCompatActivity implements OnMapRea
                  Log.e("hourxmin", hour+" "+minute);
                  myTime = String.valueOf(hour) + ":" + String.valueOf(minute);
 
+                 String datte = date;
+                 String [] dayte = datte.split ( "/" );
+                day = Integer.parseInt ( dayte[0].trim() );
+                month = Integer.parseInt ( dayte[1].trim() );
+                year = Integer.parseInt ( dayte[2].trim() );
+
                 Date date = null;
 
                 // today at your defined time Calendar
                 Calendar cal = new GregorianCalendar();
+                //set month,year and day
+                cal.set(Calendar.MONTH,month-1);
+                cal.set(Calendar.YEAR,year);
+                cal.set(Calendar.DAY_OF_MONTH,day);
                 // set hours and minutes
                 cal.set(Calendar.HOUR_OF_DAY, hour);
                 cal.set(Calendar.MINUTE, minute);
@@ -190,13 +213,15 @@ public class requestSingleActivity extends AppCompatActivity implements OnMapRea
 
                 alarmManager.set(AlarmManager.RTC_WAKEUP, timeInMs,pendingIntent);
 
-                Toast.makeText(requestSingleActivity.this, "Alarm set",Toast.LENGTH_LONG).show();
+                //Toast.makeText(requestSingleActivity.this, "Alarm set",Toast.LENGTH_LONG).show();
 
-                finish();
+
 
                 hdb.removeValue();
                 cdb.removeValue();
                 db.removeValue();
+
+                finish();
             }
         });
 
@@ -206,6 +231,17 @@ public class requestSingleActivity extends AppCompatActivity implements OnMapRea
                 db =  FirebaseDatabase.getInstance().getReference().child("AppointmentRequests").child(Key);
                 hdb = FirebaseDatabase.getInstance().getReference().child("Users").child("Handyman").child(userId).child("RequestList").child(Key);
                 cdb =  FirebaseDatabase.getInstance().getReference().child("Users").child("Customer").child(customerId).child("RequestList").child(Key);
+
+
+                String msg = "Your appointment request have been rejected for "+date+", "+time+". ";
+                new SendNotification(msg,"Appointment Request",notificationKey);
+
+                DatabaseReference dbref4 = FirebaseDatabase.getInstance().getReference().child("Users").child("Customer").child(customerId).child("Notification");
+                String RequestID1 = dbref4.push().getKey();
+                dbref4.child(RequestID1).setValue(true);
+                DatabaseReference dbref5 = FirebaseDatabase.getInstance().getReference().child("Users").child("Customer").child(customerId).child("Notification").child(RequestID1);
+                dbref5.child("Message").setValue(msg);
+
 
                 hdb.removeValue();
                 cdb.removeValue();
@@ -283,6 +319,9 @@ public class requestSingleActivity extends AppCompatActivity implements OnMapRea
                     }
                     if(map.get("PhoneNumber") != null){
                         userPhone.setText(map.get("PhoneNumber").toString());
+                    }
+                    if(map.get("notificationKey") != null){
+                        notificationKey = map.get("notificationKey").toString();
                     }
                     if(map.get("profileImageUrl") != null){
                         String url = map.get("profileImageUrl").toString();

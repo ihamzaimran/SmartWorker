@@ -36,7 +36,7 @@ public class TaskReminderReceiver extends BroadcastReceiver {
         Notification notification = builder.setContentTitle("Reminder!")
                 .setContentText("You've an appointment today")
                 .setTicker("New Message Alert!")
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(R.drawable.applog)
                 .setContentIntent(pendingIntent)
                 .setVibrate(new long[]{1000,1000,1000}).build();
 
