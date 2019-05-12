@@ -96,6 +96,7 @@ public class futureSingleProfileView extends AppCompatActivity implements OnMapR
         userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         mydbref = FirebaseDatabase.getInstance().getReference().child("FutureAppointments").child(Key);
+        mydbref.keepSynced(true);
 
         getUserRequestInfo();
 
@@ -194,7 +195,9 @@ public class futureSingleProfileView extends AppCompatActivity implements OnMapR
 
 
     private void getUserInformation(String customer, String otherUserId) {
-        DatabaseReference mOtherUserDB = FirebaseDatabase.getInstance().getReference().child("Users").child(customer).child(otherUserId);
+        DatabaseReference mOtherUserDB = FirebaseDatabase.getInstance().getReference()
+                .child("Users").child(customer).child(otherUserId);
+        mOtherUserDB.keepSynced(true);
         mOtherUserDB.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

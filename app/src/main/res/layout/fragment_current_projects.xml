@@ -3,18 +3,33 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".currentProjectsFragment"
+    tools:context=".futureProjectsFragment"
     android:background="@color/white"
+    android:fitsSystemWindows="true"
     >
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Current Projects"
-        android:gravity="center"
-        android:textSize="30sp"
-        android:textColor="@color/black"
-        />
+        android:orientation="vertical">
+
+        <android.support.v4.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <android.support.v7.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/currentAppointmentRecyclerView"
+                android:scrollbars="vertical"
+                >
+
+            </android.support.v7.widget.RecyclerView>
+
+        </android.support.v4.widget.NestedScrollView>
+
+
+    </LinearLayout>
+
 
 </FrameLayout>

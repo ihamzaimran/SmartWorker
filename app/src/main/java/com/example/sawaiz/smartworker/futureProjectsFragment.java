@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import com.example.sawaiz.smartworker.appointmentsRecyclerView.appointmentAdapter;
 import com.example.sawaiz.smartworker.appointmentsRecyclerView.appointmentObject;
 
-import com.example.sawaiz.smartworker.requestRecyclerView.requestObject;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -65,7 +64,9 @@ public class futureProjectsFragment extends Fragment {
     }
 
     private void getAllRequests() {
-        DatabaseReference mydbref = FirebaseDatabase.getInstance().getReference().child("Users").child("Handyman").child(userId).child("FutureAppointments");
+        DatabaseReference mydbref = FirebaseDatabase.getInstance().getReference()
+                .child("Users").child("Handyman").child(userId).child("FutureAppointments");
+        mydbref.keepSynced(true);
         mydbref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -73,7 +74,9 @@ public class futureProjectsFragment extends Fragment {
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
                         k = ds.getKey();
-                        DatabaseReference mydbref1 = FirebaseDatabase.getInstance().getReference().child("FutureAppointments").child(k);
+                        DatabaseReference mydbref1 = FirebaseDatabase.getInstance().getReference()
+                                .child("FutureAppointments").child(k);
+                        mydbref1.keepSynced(true);
                         mydbref1.addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

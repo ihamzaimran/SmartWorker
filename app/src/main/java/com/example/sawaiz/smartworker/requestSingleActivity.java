@@ -107,6 +107,7 @@ public class requestSingleActivity extends AppCompatActivity implements OnMapRea
         userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         mydbref = FirebaseDatabase.getInstance().getReference().child("AppointmentRequests").child(Key);
+        mydbref.keepSynced(true);
 
         getUserRequestInfo();
 
@@ -159,6 +160,11 @@ public class requestSingleActivity extends AppCompatActivity implements OnMapRea
 
                 AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
                 Intent intent = new Intent(requestSingleActivity.this, TaskReminderReceiver.class);
+                intent.putExtra("cid",customerId);
+                intent.putExtra("hid",handymanId);
+                intent.putExtra("time",time);
+                intent.putExtra("date",date);
+                intent.putExtra("key",Key);
 
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(
                         getApplicationContext(), reqcode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -304,7 +310,9 @@ public class requestSingleActivity extends AppCompatActivity implements OnMapRea
 
 
     private void getUserInformation(String customer, String otherUserId) {
-        DatabaseReference mOtherUserDB = FirebaseDatabase.getInstance().getReference().child("Users").child(customer).child(otherUserId);
+        DatabaseReference mOtherUserDB = FirebaseDatabase.getInstance().getReference()
+                .child("Users").child(customer).child(otherUserId);
+        mOtherUserDB.keepSynced(true);
         mOtherUserDB.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

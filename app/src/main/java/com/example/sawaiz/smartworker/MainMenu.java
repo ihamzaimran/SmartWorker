@@ -16,17 +16,22 @@ import com.example.sawaiz.smartworker.MapsActivity;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class MainMenu extends AppCompatActivity {
 
 
     private Button mAvailability,mProjects,mNotifications,mProfile,mComplaints,mRequests;
     private boolean isLoggingOut = false;
+    private DatabaseReference myRef;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
+
 
 
         mAvailability = (Button)(findViewById(R.id.MainnMapBtn));
