@@ -29,16 +29,17 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class currentSingleShow extends AppCompatActivity {
 
-    private String Key,appointID,userId,customerId,handymanId,customerName,Skill,checkCustomerState,checkHandymanState,notiKey,first,last,cost;
-    private static String a1,a2,a3,a4,a5,a6,a7,a8;
+    private String Key,appointID,date,time,userId,customerId,handymanId,customerName,Skill,checkCustomerState,checkHandymanState,notiKey,first,last,cost;
+    private static String a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11;
     private Button start,stop;
     private TextView name,skill;
     private ImageView profile;
-    private DatabaseReference mydbref,startJobRef,checkJob,stopJobRef,reasonRef;
+    private DatabaseReference mydbref,startJobRef,checkJob,stopJobRef,hdb,cdb,db;
     private ProgressDialog progressDialog;
     private LinearLayout timerLayout;
     private Chronometer timer;
@@ -93,12 +94,47 @@ public class currentSingleShow extends AppCompatActivity {
         stop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                stopJobRef = FirebaseDatabase.getInstance().getReference().child("CurrentAppointments").child(Key);
+                stopJobRef = FirebaseDatabase.getInstance().getReference()
+                        .child("CurrentAppointments").child(Key);
                 stopJobRef.child("HandymanStart").setValue("ForceStopped");
-                showReasonDialog();
+                new SendNotification("Handyman has forced the job for some reason.","Handyman stopped the Job!",notiKey);
+                recordHistory();
+               // Intent i = new Intent(currentSingleShow.this,TransctionForcedStopped.class);
+                //startActivity(i);
+                //return;
+
             }
         });
     }
+
+    private void recordHistory() {
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference handyman = FirebaseDatabase.getInstance().getReference().child("Users").child("Handyman").child(userId).child("PastAppointments");
+        DatabaseReference customerDB = FirebaseDatabase.getInstance().getReference().child("Users").child("Customer").child(customerId).child("PastAppointments");
+        DatabaseReference myDBref1 = FirebaseDatabase.getInstance().getReference().child("PastAppointments");
+        //String PastAppointmentsId = myDBref1.push().getKey();
+        handyman.child(Key).setValue(true);
+        customerDB.child(Key).setValue(true);
+
+        Map data = new HashMap();
+        data.put("HandymanId",userId);
+        data.put("Date",date);
+        data.put("Time",time);
+        data.put("CustomerId",customerId);
+        data.put("JobDuration",getcompletehandyduration());
+        data.put("TotalBill",getcompletehandybill());
+       // data.put("ForceStoppedJobReason",input);
+        myDBref1.child(Key).updateChildren(data);
+
+        db =  FirebaseDatabase.getInstance().getReference().child("CurrentAppointments").child(Key);
+        hdb = FirebaseDatabase.getInstance().getReference().child("Users").child("Handyman").child(userId).child("CurrentAppointments").child(Key);
+        cdb =  FirebaseDatabase.getInstance().getReference().child("Users").child("Customer").child(customerId).child("CurrentAppointments").child(Key);
+
+        hdb.removeValue();
+        cdb.removeValue();
+        db.removeValue();
+    }
+
 
     private void checkJobStarted() {
         checkJob = FirebaseDatabase.getInstance().getReference().child("CurrentAppointments").child(Key);
@@ -119,10 +155,17 @@ public class currentSingleShow extends AppCompatActivity {
                                 start.setVisibility(View.INVISIBLE);
                             }
                             else{
+                                //if(ds.getKey().equals("CustomerStart")){
                                 //start.setVisibility(View.VISIBLE);
-                                stopTimer(view);
-                                stop.setVisibility(View.INVISIBLE);
+                                //checkCustomerState = ds.getValue().toString();
+                                //if(checkCustomerState.equals("stopped")){
+                                    stopTimer(view);
+                                    stop.setVisibility(View.INVISIBLE);
+                               // }
                             }
+                           // else{
+                             //   Log.e("customerState",checkCustomerState);
+                            //}
                         }
 
                     }
@@ -150,6 +193,7 @@ public class currentSingleShow extends AppCompatActivity {
             pause = SystemClock.elapsedRealtime() - timer.getBase();
             running = false;
             calculateTime(pause);
+            //showReasonDialog();
             transctionActivity();
             finish();
         }
@@ -162,31 +206,7 @@ public class currentSingleShow extends AppCompatActivity {
         startActivity(data);
     }
 
-    private void showReasonDialog() {
-        reasonRef = FirebaseDatabase.getInstance().getReference().child("CurrentAppointments").child(Key);
-        LayoutInflater li = LayoutInflater.from(context);
-        View promptsView = li.inflate(R.layout.reason_dialog, null);
 
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context,R.style.AlertDialogTheme);
-        alertDialogBuilder.setTitle("Reason");
-        alertDialogBuilder.setMessage("Provide reason for forced stopping the job?");
-        alertDialogBuilder.setView(promptsView);
-
-        final EditText userInput = (EditText) promptsView.findViewById(R.id.reason_txt);
-        alertDialogBuilder
-                .setCancelable(false)
-                .setPositiveButton("Submit",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                String input = userInput.getText().toString();
-                                reasonRef.child("ForceStoppedJobReason").setValue(input);
-                                new SendNotification(input,"Forced Stopped Job Reason",notiKey);
-                            }
-                        });
-
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
-    }
 
 
     private void calculateTime(long pause) {
@@ -222,6 +242,14 @@ public class currentSingleShow extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()){
                     for (DataSnapshot child:dataSnapshot.getChildren()){
+                        if (child.getKey().equals("CustomerId")){
+                            customerId = child.getValue().toString();
+                            getUserInformation("Customer", customerId);
+                        }
+                        if (child.getKey().equals("HandymanId")){
+                            handymanId = child.getValue().toString();
+                            gethandyInformation("Handyman", handymanId);
+                        }
                         if (child.getKey().equals("CustomerId")){
                             customerId = child.getValue().toString();
                             getUserInformation("Customer", customerId);
@@ -369,6 +397,7 @@ public class currentSingleShow extends AppCompatActivity {
     {
         return a7;
     }
+
     public static void setcustomerid(String p8)
     {
         a8 = p8;
@@ -376,5 +405,32 @@ public class currentSingleShow extends AppCompatActivity {
     public static String getcustomerid()
     {
         return a8;
+    }
+
+    public static void setnotikey(String p9)
+    {
+        a9 = p9;
+    }
+    public static String getnotikey()
+    {
+        return a9;
+    }
+
+    public static void setDate(String p8)
+    {
+        a10 = p8;
+    }
+    public static String getDate()
+    {
+        return a10;
+    }
+
+    public static void setTime(String p9)
+    {
+        a11 = p9;
+    }
+    public static String getTime()
+    {
+        return a11;
     }
 }

@@ -19,7 +19,7 @@
     </style>
 
     <style name="AlertDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
-        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorAccent">@color/dialogButtonText</item>
     </style>
 
     <style name="AppTheme.NoActionBar">

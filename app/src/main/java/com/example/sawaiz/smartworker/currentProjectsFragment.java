@@ -90,7 +90,7 @@ public class currentProjectsFragment extends Fragment {
     private void getInfo(String CustomerKey) {
         DatabaseReference mydbref1 = FirebaseDatabase.getInstance().getReference()
                 .child("CurrentAppointments").child(CustomerKey);
-        mydbref1.keepSynced(true);
+
         mydbref1.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

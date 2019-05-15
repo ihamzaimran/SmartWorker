@@ -89,9 +89,9 @@ public class TaskReminderReceiver extends BroadcastReceiver {
         customerDB.keepSynced(true);
         databaseReference = FirebaseDatabase.getInstance().getReference().child("CurrentAppointments");
 
-        String CurrentAppointmentsId = databaseReference.push().getKey();
-        handyman.child(CurrentAppointmentsId).setValue(true);
-        customerDB.child(CurrentAppointmentsId).setValue(true);
+        //String CurrentAppointmentsId = databaseReference.push().getKey();
+        handyman.child(Key).setValue(true);
+        customerDB.child(Key).setValue(true);
 
         Map data = new HashMap();
         data.put("HandymanId",userId);
@@ -100,7 +100,7 @@ public class TaskReminderReceiver extends BroadcastReceiver {
         data.put("CustomerId",cid);
         data.put("HandymanStart","NotStarted");
         data.put("CustomerStart","NotStarted");
-        databaseReference.child(CurrentAppointmentsId).updateChildren(data);
+        databaseReference.child(Key).updateChildren(data);
 
         db =  FirebaseDatabase.getInstance().getReference().child("FutureAppointments").child(Key);
         hdb = FirebaseDatabase.getInstance().getReference().child("Users").child("Handyman").child(userId).child("FutureAppointments").child(Key);

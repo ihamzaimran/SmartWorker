@@ -189,7 +189,8 @@
                 android:text="Paid"
                 android:textColor="@color/white"
                 android:layout_marginRight="15dp"
-                android:layout_marginLeft="15dp"/>
+                android:layout_marginLeft="15dp"
+                android:layout_marginBottom="5dp"/>
 
 
         </LinearLayout>

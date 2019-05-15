@@ -99,7 +99,7 @@ public class MapsActivity  extends FragmentActivity implements OnMapReadyCallbac
             @Override
             public void onClick(View v) {
 
-                AlertDialog.Builder alertDialog = new AlertDialog.Builder(MapsActivity.this);
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(MapsActivity.this,R.style.AlertDialogTheme);
                 alertDialog.setTitle("Confirmation");
                 alertDialog.setMessage("Are you sure you want to log out?");
 

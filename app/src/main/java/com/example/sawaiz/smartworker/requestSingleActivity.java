@@ -125,9 +125,9 @@ public class requestSingleActivity extends AppCompatActivity implements OnMapRea
                 DatabaseReference handyman = FirebaseDatabase.getInstance().getReference().child("Users").child("Handyman").child(userId).child("FutureAppointments");
                 DatabaseReference customerDB = FirebaseDatabase.getInstance().getReference().child("Users").child("Customer").child(customerId).child("FutureAppointments");
                 DatabaseReference myDBref1 = FirebaseDatabase.getInstance().getReference().child("FutureAppointments");
-                String FutureAppointmentsId = myDBref1.push().getKey();
-                handyman.child(FutureAppointmentsId).setValue(true);
-                customerDB.child(FutureAppointmentsId).setValue(true);
+                //String FutureAppointmentsId = myDBref1.push().getKey();
+                handyman.child(Key).setValue(true);
+                customerDB.child(Key).setValue(true);
 
                 Map data = new HashMap();
                 data.put("HandymanId",userId);
@@ -136,7 +136,7 @@ public class requestSingleActivity extends AppCompatActivity implements OnMapRea
                 data.put("CustomerId",customerId);
                 data.put("CustomerLocation/lat",lat);
                 data.put("CustomerLocation/lat",lng);
-                myDBref1.child(FutureAppointmentsId).updateChildren(data);
+                myDBref1.child(Key).updateChildren(data);
 
                 db =  FirebaseDatabase.getInstance().getReference().child("AppointmentRequests").child(Key);
                 hdb = FirebaseDatabase.getInstance().getReference().child("Users").child("Handyman").child(userId).child("RequestList").child(Key);

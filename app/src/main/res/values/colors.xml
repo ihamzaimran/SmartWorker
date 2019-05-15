@@ -15,5 +15,6 @@
     <color name="disbale_foreground_grey">#42221f1f</color>
     <color name="disbale_thumb_grey">#1c000000</color>
     <color name="disbale_thumb_green">#46bdbf</color>
+    <color name="dialogButtonText">#3B5998</color>
 
 </resources>
