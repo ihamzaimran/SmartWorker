@@ -25,6 +25,7 @@ public class TaskReminderReceiver extends BroadcastReceiver {
     private static final String ID = "snakexmon";
     private DatabaseReference databaseReference,hdb,cdb,db;;
     private int reqcode;
+    private String msg;
     @Override
     public void onReceive(Context context, Intent intent) {
 
@@ -36,6 +37,7 @@ public class TaskReminderReceiver extends BroadcastReceiver {
         String cid = intent.getStringExtra("cid");
         String hid = intent.getStringExtra("hid");
         String Key = intent.getStringExtra("key");
+        msg = "You've an appointment today on "+date;
 
         Intent notificationIntent = new Intent(context, notify.class);
 
@@ -48,8 +50,9 @@ public class TaskReminderReceiver extends BroadcastReceiver {
         Notification.Builder builder = new Notification.Builder(context);
 
         Notification notification = builder.setContentTitle("Reminder!")
-                .setContentText("You've an appointment today on "+date)
                 .setTicker("New Message Alert!")
+                .setStyle(new Notification.BigTextStyle().bigText(msg))
+                .setContentText(msg)
                 .setSmallIcon(R.drawable.applog)
                 .setContentIntent(pendingIntent)
                 .setVibrate(new long[]{1000}).build();
@@ -95,6 +98,8 @@ public class TaskReminderReceiver extends BroadcastReceiver {
         data.put("Date",date);
         data.put("Time",time);
         data.put("CustomerId",cid);
+        data.put("HandymanStart","NotStarted");
+        data.put("CustomerStart","NotStarted");
         databaseReference.child(CurrentAppointmentsId).updateChildren(data);
 
         db =  FirebaseDatabase.getInstance().getReference().child("FutureAppointments").child(Key);

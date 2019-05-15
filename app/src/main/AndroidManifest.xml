@@ -26,7 +26,8 @@
         android:roundIcon="@mipmap/applogolauncher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".currentSingleShow"></activity>
+        <activity android:name=".TransctionActivity"></activity>
+        <activity android:name=".currentSingleShow" />
         <activity android:name=".notify" />
         <activity android:name=".Notifications" />
         <activity android:name=".futureSingleProfileView" />
