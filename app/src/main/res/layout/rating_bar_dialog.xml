@@ -13,6 +13,10 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:id="@+id/customerRatingBar"
-        android:stepSize="1"/>
+        android:stepSize="1"
+        android:progressTint="@color/colorPrimary"
+        android:progressBackgroundTint="@color/colorPrimary"
+        android:secondaryProgressTint="@color/colorPrimary"
+       />
 
 </LinearLayout>

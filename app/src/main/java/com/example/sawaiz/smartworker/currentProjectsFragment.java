@@ -73,44 +73,7 @@ public class currentProjectsFragment extends Fragment {
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
                         k = ds.getKey();
-                        DatabaseReference mydbref1 = FirebaseDatabase.getInstance().getReference()
-                                .child("CurrentAppointments").child(k);
-                        mydbref1.keepSynced(true);
-                        mydbref1.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                if (dataSnapshot.exists()) {
-                                    Key = dataSnapshot.getKey();
-
-                                    for (DataSnapshot child : dataSnapshot.getChildren()) {
-                                        if (child.getKey().equals("Time")) {
-                                            time = child.getValue().toString();
-                                            //Log.e("time: ",time);
-                                        }
-                                        if (child.getKey().equals("Date")) {
-                                            date = child.getValue().toString();
-                                            //Log.e("date: ",date);
-                                        }
-                                        if (child.getKey().equals("CustomerId")) {
-                                            customerId = child.getValue().toString();
-                                        }
-                                    }
-
-                                    Log.e("Cid: ", customerId);
-                                    currentAppointmentObject obj = new currentAppointmentObject(date,time,Key);
-                                    resultRequest.add(obj);
-                                    mAppointmentAdapter.notifyDataSetChanged();
-                                    //progressDialog.dismiss();
-
-                                }
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                            }
-                        });
-
+                        getInfo(k);
                     }
 
                 }
@@ -122,6 +85,46 @@ public class currentProjectsFragment extends Fragment {
             }
         });
         //progressDialog.dismiss();
+    }
+
+    private void getInfo(String CustomerKey) {
+        DatabaseReference mydbref1 = FirebaseDatabase.getInstance().getReference()
+                .child("CurrentAppointments").child(CustomerKey);
+        mydbref1.keepSynced(true);
+        mydbref1.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    Key = dataSnapshot.getKey();
+
+                    for (DataSnapshot child : dataSnapshot.getChildren()) {
+                        if (child.getKey().equals("Time")) {
+                            time = child.getValue().toString();
+                            //Log.e("time: ",time);
+                        }
+                        if (child.getKey().equals("Date")) {
+                            date = child.getValue().toString();
+                            //Log.e("date: ",date);
+                        }
+                        if (child.getKey().equals("CustomerId")) {
+                            customerId = child.getValue().toString();
+                        }
+                    }
+
+                    Log.e("Cid: ", customerId);
+                    currentAppointmentObject obj = new currentAppointmentObject(date,time,Key);
+                    resultRequest.add(obj);
+                    mAppointmentAdapter.notifyDataSetChanged();
+                    //progressDialog.dismiss();
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private ArrayList resultRequest = new ArrayList<currentAppointmentObject>();

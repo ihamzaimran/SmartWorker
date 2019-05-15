@@ -1,6 +1,8 @@
 package com.example.sawaiz.smartworker;
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -8,26 +10,22 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdate;
+import com.example.sawaiz.smartworker.Utils.SendNotification;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -37,15 +35,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
 public class futureSingleProfileView extends AppCompatActivity implements OnMapReadyCallback{
 
-    String userId,customerId,handymanId,name,latlng, lat,lng,date,time,Key;
+    String userId,customerId,handymanId,name,latlng, lat,lng,date,time,Key,notiKey;
 
     private TextView userName;
     private TextView userPhone;
@@ -67,6 +62,7 @@ public class futureSingleProfileView extends AppCompatActivity implements OnMapR
     private GoogleMap mMap;
     private SupportMapFragment mMapFragment;
     Location location;
+    Context context = this;
 
 
     @Override
@@ -111,33 +107,58 @@ public class futureSingleProfileView extends AppCompatActivity implements OnMapR
         reject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                DatabaseReference handyman = FirebaseDatabase.getInstance().getReference().child("Users").child("Handyman").child(userId).child("CancelRequestsList");
-                DatabaseReference customerDB = FirebaseDatabase.getInstance().getReference().child("Users").child("Customer").child(customerId).child("CancelRequestsList");
-                DatabaseReference myDBref1 = FirebaseDatabase.getInstance().getReference().child("CancelRequests");
-                String cancelRequestsID = myDBref1.push().getKey();
-                handyman.child(cancelRequestsID).setValue(true);
-                customerDB.child(cancelRequestsID).setValue(true);
-
-                Map data = new HashMap();
-                data.put("HandymanId",userId);
-                data.put("CustomerId",customerId);
-                data.put("Date",date);
-                data.put("Time",time);
-
-
-                myDBref1.child(cancelRequestsID).updateChildren(data);
-
-                db =  FirebaseDatabase.getInstance().getReference().child("FutureAppointments").child(Key);
-                hdb = FirebaseDatabase.getInstance().getReference().child("Users").child("Handyman").child(userId).child("FutureAppointments").child(Key);
-                cdb =  FirebaseDatabase.getInstance().getReference().child("Users").child("Customer").child(customerId).child("FutureAppointments").child(Key);
-
-                hdb.removeValue();
-                cdb.removeValue();
-                db.removeValue();
-                finish();
+               displayCancelDialog();
             }
         });
+    }
+
+    private void displayCancelDialog() {
+        LayoutInflater li = LayoutInflater.from(context);
+        View promptsView = li.inflate(R.layout.reason_dialog, null);
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context,R.style.AlertDialogTheme);
+        alertDialogBuilder.setTitle("Reason");
+        alertDialogBuilder.setMessage("Provide reason for cancelling the request?");
+        alertDialogBuilder.setView(promptsView);
+
+        final EditText userInput = (EditText) promptsView.findViewById(R.id.reason_txt);
+        alertDialogBuilder
+                .setCancelable(false)
+                .setPositiveButton("Submit",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                String input = userInput.getText().toString();
+                                new SendNotification(input,"Request Cancellation Reason",notiKey);
+                                String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                                DatabaseReference handyman = FirebaseDatabase.getInstance().getReference().child("Users").child("Handyman").child(userId).child("CancelRequestsList");
+                                DatabaseReference customerDB = FirebaseDatabase.getInstance().getReference().child("Users").child("Customer").child(customerId).child("CancelRequestsList");
+                                DatabaseReference myDBref1 = FirebaseDatabase.getInstance().getReference().child("CancelRequests");
+                                String cancelRequestsID = myDBref1.push().getKey();
+                                handyman.child(cancelRequestsID).setValue(true);
+                                customerDB.child(cancelRequestsID).setValue(true);
+
+                                Map data = new HashMap();
+                                data.put("HandymanId",userId);
+                                data.put("CustomerId",customerId);
+                                data.put("Date",date);
+                                data.put("Time",time);
+
+
+                                myDBref1.child(cancelRequestsID).updateChildren(data);
+
+                                db =  FirebaseDatabase.getInstance().getReference().child("FutureAppointments").child(Key);
+                                hdb = FirebaseDatabase.getInstance().getReference().child("Users").child("Handyman").child(userId).child("FutureAppointments").child(Key);
+                                cdb =  FirebaseDatabase.getInstance().getReference().child("Users").child("Customer").child(customerId).child("FutureAppointments").child(Key);
+
+                                hdb.removeValue();
+                                cdb.removeValue();
+                                db.removeValue();
+                                finish();
+                            }
+                        });
+
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
     }
 
     private void getUserRequestInfo() {
@@ -212,6 +233,9 @@ public class futureSingleProfileView extends AppCompatActivity implements OnMapR
                     }
                     if(map.get("PhoneNumber") != null){
                         userPhone.setText(map.get("PhoneNumber").toString());
+                    }
+                    if(map.get("notificationKey") != null){
+                        notiKey = map.get("notificationKey").toString();
                     }
                     if(map.get("profileImageUrl") != null){
                         String url = map.get("profileImageUrl").toString();
