@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -9,13 +8,11 @@
     android:fillViewport="true"
     android:background="@color/white"
     >
+
     <RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:fillViewport="true"
-    android:background="@color/white"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
         >
 
 
@@ -30,22 +27,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="10dp"
-                android:text="Billing Details"
+                android:layout_marginTop="20dp"
+                android:text="Appointment Details"
                 android:textColor="@color/black"
-                android:typeface="monospace" />
+                />
 
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="5dp"
+                android:padding="10dp"
                 android:layout_marginBottom="10dp">
 
                 <TextView android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
-                    android:typeface="monospace"
                     android:text="Appointment ID: "/>
 
                 <TextView
@@ -53,7 +49,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
-                   />
+                     />
             </LinearLayout>
 
             <LinearLayout
@@ -61,7 +57,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:padding="10dp"
-                android:layout_marginBottom="5dp">
+                android:layout_marginBottom="10dp">
 
 
                 <TextView android:layout_width="wrap_content"
@@ -83,7 +79,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:padding="10dp"
-                android:layout_marginBottom="5dp">
+                android:layout_marginBottom="10dp">
 
 
                 <TextView android:layout_width="wrap_content"
@@ -95,16 +91,58 @@
                     android:id="@+id/completeskill"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/black"
+                 />
             </LinearLayout>
-
 
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:padding="10dp"
-                android:layout_marginBottom="5dp">
+                android:layout_marginBottom="10dp">
+
+
+                <TextView android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:text="Date: "/>
+
+                <TextView
+                    android:id="@+id/completedate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="10dp"
+                android:layout_marginBottom="10dp">
+
+
+                <TextView android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:text="Time: "/>
+
+                <TextView
+                    android:id="@+id/completetime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="10dp"
+                android:layout_marginBottom="10dp">
 
 
                 <TextView android:layout_width="wrap_content"
@@ -117,7 +155,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
-                    />
+                     />
             </LinearLayout>
 
 
@@ -127,7 +165,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:padding="10dp"
-                android:layout_marginBottom="5dp">
+                android:layout_marginBottom="10dp">
 
 
                 <TextView android:layout_width="wrap_content"
@@ -141,7 +179,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
-               />
+                     />
             </LinearLayout>
 
 
@@ -150,7 +188,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:padding="10dp"
-                android:layout_marginBottom="5dp">
+                android:layout_marginBottom="10dp">
 
 
                 <TextView android:layout_width="wrap_content"
@@ -162,33 +200,64 @@
                     android:id="@+id/completebill"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/black"
+                     />
             </LinearLayout>
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp"
+    android:padding="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="You've rated "
+                    android:textColor="@color/black"
+                    />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/cname"
+        android:textColor="@color/black"
+        />
+</LinearLayout>
+                <android.support.v7.widget.AppCompatRatingBar
+                    android:id="@+id/customerRatingBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:progressBackgroundTint="@color/colorPrimary"
+                    android:progressTint="@color/colorPrimary"
+                    android:secondaryProgressTint="@color/colorPrimary"
+                    android:stepSize="1"
+                    android:numStars="5"
+                    />
+
 
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginBottom="5dp"
                 android:gravity="center"
-                android:text="There was a problem with the job. Report to us!"
-                android:textColor="@color/black"
-                android:visibility="invisible"/>
+                android:text="Click on 'Paid' button, only after you have been paid the total bill amount by customer"
+                android:textColor="@color/black" />
 
             <Button
-                android:id="@+id/completeBTPaid"
+                android:id="@+id/report"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dip"
+                android:layout_marginTop="10dip"
                 android:background="@color/colorPrimary"
                 style="@style/Widget.AppCompat.Button.Borderless.Colored"
-                android:text="Paid"
+                android:text="Report"
                 android:textColor="@color/white"
                 android:layout_marginRight="15dp"
                 android:layout_marginLeft="15dp"
-                android:layout_marginBottom="5dp"
-                android:visibility="invisible"/>
+                android:layout_marginBottom="5dp"/>
 
 
         </LinearLayout>
