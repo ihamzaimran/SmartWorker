@@ -25,24 +25,25 @@ public class TaskReminderReceiver extends BroadcastReceiver {
     private static final String ID = "snakexmon";
     private DatabaseReference databaseReference,hdb,cdb,db;;
     private int reqcode;
-    private String msg;
+    private String msg,date,time,cid,hid,Key;
     @Override
     public void onReceive(Context context, Intent intent) {
 
         Calendar c = Calendar.getInstance();
         reqcode = (int) c.getTimeInMillis();
 
-        String date = intent.getStringExtra("date");
-        String time = intent.getStringExtra("time");
-        String cid = intent.getStringExtra("cid");
-        String hid = intent.getStringExtra("hid");
-        String Key = intent.getStringExtra("key");
-        msg = "You've an appointment today on "+date;
+        date = intent.getStringExtra("date");
+        time = intent.getStringExtra("time");
+        cid = intent.getStringExtra("cid");
+        hid = intent.getStringExtra("hid");
+        Key = intent.getStringExtra("key");
+        msg = "You've an appointment today at "+time;
 
-        Intent notificationIntent = new Intent(context, notify.class);
+        Intent notificationIntent = new Intent(context, currentSingleShow.class);
+        notificationIntent.putExtra("key",Key);
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-        stackBuilder.addParentStack(notify.class);
+        stackBuilder.addParentStack(currentSingleShow.class);
         stackBuilder.addNextIntent(notificationIntent);
 
         PendingIntent pendingIntent = stackBuilder.getPendingIntent(reqcode, PendingIntent.FLAG_UPDATE_CURRENT);

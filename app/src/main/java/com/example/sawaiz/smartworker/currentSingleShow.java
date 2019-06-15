@@ -116,6 +116,8 @@ public class currentSingleShow extends AppCompatActivity {
         handyman.child(Key).setValue(true);
         customerDB.child(Key).setValue(true);
 
+
+
         Map data = new HashMap();
         data.put("HandymanId",userId);
         data.put("Date",date);
@@ -125,6 +127,11 @@ public class currentSingleShow extends AppCompatActivity {
         data.put("TotalBill",getcompletehandybill());
        // data.put("ForceStoppedJobReason",input);
         myDBref1.child(Key).updateChildren(data);
+
+        DatabaseReference transaction = FirebaseDatabase.getInstance().getReference().child("Transactions");
+        Map data1 = new HashMap();
+        data1.put("amount",getcompletehandybill());
+        transaction.child(getcompletehandyappoint()).updateChildren(data1);
 
         db =  FirebaseDatabase.getInstance().getReference().child("CurrentAppointments").child(Key);
         hdb = FirebaseDatabase.getInstance().getReference().child("Users").child("Handyman").child(userId).child("CurrentAppointments").child(Key);
