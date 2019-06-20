@@ -2,17 +2,22 @@ package com.example.sawaiz.smartworker;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -23,8 +28,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -33,8 +41,11 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.Permission;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,7 +56,13 @@ public class CNIC extends AppCompatActivity {
 
     private static final int TAKE_IMAGE = 0;
     private static final int PERMISSION_CODE = 1000;
-    private Uri UriImage;
+    private Uri contentURI;
+    ProgressDialog progressDialog;
+    String downloadUri;
+    private static final String IMAGE_DIRECTORY = "/CNIC";
+    private String userID;
+    private FirebaseAuth mAuth;
+    private DatabaseReference myRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +75,10 @@ public class CNIC extends AppCompatActivity {
         resetBtn = (Button)(findViewById(R.id.cnicReset_btn));
         saveBTn = (Button)(findViewById(R.id.cnicSave_Btn));
 
+        mAuth = FirebaseAuth.getInstance();
+        userID = mAuth.getCurrentUser().getUid();
 
+        myRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Handyman").child(userID);
 
 
         backBtn.setOnClickListener(new View.OnClickListener() {
@@ -100,7 +120,7 @@ public class CNIC extends AppCompatActivity {
         saveBTn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                savingCNIC();
+                uploadImage();
                 Intent loginIntent = new Intent(CNIC.this, LoginActivity.class);
                 startActivity(loginIntent);
                 Toast.makeText(getApplicationContext(),"Congratulations! Your Account has been Created. Please Login into your account.",Toast.LENGTH_SHORT).show();
@@ -145,61 +165,107 @@ public class CNIC extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == TAKE_IMAGE) {
-            final Uri imageUri = data.getData();
-            UriImage = imageUri;
-            backImg.setImageURI(UriImage);
+            Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
+            backImg.setImageBitmap(thumbnail);
+            savingCNIC(thumbnail);
         }
     }
 
 
-    public void savingCNIC()
-    {
-        if (UriImage != null) {
+    public String savingCNIC(Bitmap myBitmap) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        myBitmap.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
+        File wallpaperDirectory = new File(
+                Environment.getExternalStorageDirectory() + IMAGE_DIRECTORY);
+        // have the object build the directory structure, if needed.
+        if (!wallpaperDirectory.exists()) {
+            wallpaperDirectory.mkdirs();
+        }
 
-            FirebaseAuth auth = FirebaseAuth.getInstance();
-            String user_id = auth.getCurrentUser().getUid();
-            FirebaseDatabase database = FirebaseDatabase.getInstance();
-            final DatabaseReference myRef = database.getReference().child("Users").child("Handyman").child(user_id);
+        try {
+            File f = new File(wallpaperDirectory, Calendar.getInstance()
+                    .getTimeInMillis() + ".jpg");
+            f.createNewFile();
+            FileOutputStream fo = new FileOutputStream(f);
+            fo.write(bytes.toByteArray());
+            MediaScannerConnection.scanFile(getApplicationContext(),
+                    new String[]{f.getPath()},
+                    new String[]{"image/jpeg"}, null);
+            fo.close();
+            Log.d("TAG", "File Saved::---&gt;" + f.getAbsolutePath());
 
-            StorageReference filePath = FirebaseStorage.getInstance().getReference().child("CNIC").child(user_id);
-            Bitmap bitmap = null;
-            try {
-                bitmap = MediaStore.Images.Media.getBitmap(getApplication().getContentResolver(), UriImage);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            return f.getAbsolutePath();
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+        return "";
+    }
 
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 20, baos);
-            byte[] data = baos.toByteArray();
-            UploadTask uploadTask = filePath.putBytes(data);
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    private void uploadImage() {
+
+        progressDialog.setMessage("Uploading CNIC...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+
+        if (contentURI != null) {
+
+            final StorageReference filReference = FirebaseStorage.getInstance().getReference().child("ProfilePhoto").child(userID);
+
+            final UploadTask uploadTask = filReference.putFile(contentURI);
+
 
             uploadTask.addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    finish();
-                    Toast.makeText(getApplicationContext(),"Failed to upload pciture to our database. Try again!",Toast.LENGTH_SHORT).show();
-                    return;
+                    Toast.makeText(getApplicationContext(), "Upload failed.",
+                            Toast.LENGTH_SHORT).show();
+
+                    progressDialog.dismiss();
                 }
-            });
-            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    String downloadUrl = taskSnapshot.getMetadata().getReference().getDownloadUrl().toString();
 
-                    Map newImage = new HashMap();
-                    newImage.put("CNICImageURL", downloadUrl);
-                    myRef.updateChildren(newImage);
-                    finish();
-                    return;
+                    Task<Uri> task = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                        @Override
+                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                            if (!task.isSuccessful()) {
+                                Toast.makeText(getApplicationContext(), "Upload failed.",
+                                        Toast.LENGTH_SHORT).show();
+
+                                progressDialog.dismiss();
+                                throw task.getException();
+                            }
+                            downloadUri = filReference.getDownloadUrl().toString();
+                            return filReference.getDownloadUrl();
+                        }
+                    }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Uri> task) {
+                            if (task.isSuccessful()) {
+
+                                downloadUri = task.getResult().toString();
+                                Map newImage = new HashMap();
+                                newImage.put("CNICImageURL", downloadUri);
+                                myRef.updateChildren(newImage);
+                                progressDialog.dismiss();
+                                Toast.makeText(getApplicationContext(), "CNIC Uploaded Successfully",
+                                        Toast.LENGTH_SHORT).show();
+
+
+                            }
+                        }
+                    });
                 }
             });
-        } else {
-            finish();
+
+        }
+        else {
+            return;
         }
 
 
     }
-
 
 }

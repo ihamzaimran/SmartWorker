@@ -37,7 +37,7 @@ public class TaskReminderReceiver extends BroadcastReceiver {
         cid = intent.getStringExtra("cid");
         hid = intent.getStringExtra("hid");
         Key = intent.getStringExtra("key");
-        msg = "You've an appointment today at "+time;
+        msg = "Your appointment is starting."+"\n"+"Time: "+time;
 
         Intent notificationIntent = new Intent(context, currentSingleShow.class);
         notificationIntent.putExtra("key",Key);

@@ -189,6 +189,7 @@ public class Registration extends AppCompatActivity {
         SavingUser.put("PhoneNumber",mPhone.getText().toString());
         SavingUser.put("CostPerHour",costTxt.getText().toString());
         SavingUser.put("Skill",RegSkill);
+        SavingUser.put("Status","Unverified");
         myRef.updateChildren(SavingUser);
 
     }
