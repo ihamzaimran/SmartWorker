@@ -3,6 +3,7 @@ package com.example.sawaiz.smartworker;
 import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -19,6 +20,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -48,6 +50,7 @@ import java.security.Permission;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class CNIC extends AppCompatActivity {
 
@@ -60,26 +63,28 @@ public class CNIC extends AppCompatActivity {
     ProgressDialog progressDialog;
     String downloadUri;
     private static final String IMAGE_DIRECTORY = "/CNIC";
-    private String userID;
     private FirebaseAuth mAuth;
-    private DatabaseReference myRef;
+    String userID;
+    private DatabaseReference myRef, reference;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cnic);
 
+        progressDialog = new ProgressDialog (this);
+
+        userID = mAuth.getCurrentUser().getUid();
+        reference = FirebaseDatabase.getInstance().getReference();
+        myRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Handyman").child(userID);
+
+
 
         backImg = (ImageView)(findViewById(R.id.CNICback_img));
         backBtn = (Button)(findViewById(R.id.backimage_btn));
         resetBtn = (Button)(findViewById(R.id.cnicReset_btn));
         saveBTn = (Button)(findViewById(R.id.cnicSave_Btn));
-
-        mAuth = FirebaseAuth.getInstance();
-        userID = mAuth.getCurrentUser().getUid();
-
-        myRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Handyman").child(userID);
-
 
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,6 +126,9 @@ public class CNIC extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 uploadImage();
+                Toast.makeText(getApplicationContext(), "CNIC Uploaded Successfully",
+                        Toast.LENGTH_SHORT).show();
+
                 Intent loginIntent = new Intent(CNIC.this, LoginActivity.class);
                 startActivity(loginIntent);
                 Toast.makeText(getApplicationContext(),"Congratulations! Your Account has been Created. Please Login into your account.",Toast.LENGTH_SHORT).show();
@@ -201,6 +209,16 @@ public class CNIC extends AppCompatActivity {
         return "";
     }
 
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    private String getFileExtenstion(Uri uri) {
+        ContentResolver cr = Objects.requireNonNull(getApplicationContext()).getContentResolver();
+        MimeTypeMap mime = MimeTypeMap.getSingleton();
+        return mime.getExtensionFromMimeType(cr.getType(uri));
+
+
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void uploadImage() {
 
@@ -210,7 +228,7 @@ public class CNIC extends AppCompatActivity {
 
         if (contentURI != null) {
 
-            final StorageReference filReference = FirebaseStorage.getInstance().getReference().child("ProfilePhoto").child(userID);
+            final StorageReference filReference = FirebaseStorage.getInstance().getReference().child("CNIC").child(userID);
 
             final UploadTask uploadTask = filReference.putFile(contentURI);
 
@@ -267,5 +285,4 @@ public class CNIC extends AppCompatActivity {
 
 
     }
-
 }

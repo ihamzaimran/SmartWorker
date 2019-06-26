@@ -48,7 +48,7 @@ public class MapsActivity  extends FragmentActivity implements OnMapReadyCallbac
         com.google.android.gms.location.LocationListener {
 
     private String userID;
-    public String skill,sk;
+    public String skill,sk,status;
 
     private GoogleMap mMap;
     GoogleApiClient mGoogleApiClient;
@@ -92,9 +92,14 @@ public class MapsActivity  extends FragmentActivity implements OnMapReadyCallbac
         userID = mAuth.getCurrentUser().getUid();
         myRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Handyman").child(userID);
 
-
+        mainMenuBtn = (Button)(findViewById(R.id.MapMenuBtn));
 
         logoutBtn = (Button)(findViewById(R.id.mLogOutBtn));
+
+        availabilitySwitch = (Switch) (findViewById(R.id.availabiltySwitch));
+
+        getUserInfo();
+
         logoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -131,7 +136,7 @@ public class MapsActivity  extends FragmentActivity implements OnMapReadyCallbac
         });
 
 
-        availabilitySwitch = (Switch) (findViewById(R.id.availabiltySwitch));
+
         availabilitySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
@@ -143,7 +148,7 @@ public class MapsActivity  extends FragmentActivity implements OnMapReadyCallbac
             }
         });
 
-        mainMenuBtn = (Button)(findViewById(R.id.MapMenuBtn));
+
         mainMenuBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -152,9 +157,10 @@ public class MapsActivity  extends FragmentActivity implements OnMapReadyCallbac
                 return;
             }
         });
-        getUserInfo();
+
 
     }
+
 
 
     private void getUserInfo(){
@@ -167,9 +173,24 @@ public class MapsActivity  extends FragmentActivity implements OnMapReadyCallbac
                     if(map.get("Skill")!=null){
                         skill = map.get("Skill").toString();
                         sk=skill+"Available";
-                        availabilitySwitch.setVisibility(View.VISIBLE);
-                        //Toast.makeText(getApplicationContext(),"Everything's Ready Now!",Toast.LENGTH_SHORT).show();
+                        //availabilitySwitch.setVisibility(View.VISIBLE);
 
+
+                    }
+
+                    if(map.get("Status")!=null){
+                        status = map.get("Status").toString();
+                        if(status.equals("Verified")){
+                            availabilitySwitch.setVisibility(View.VISIBLE);
+                            mainMenuBtn.setVisibility(View.VISIBLE);
+                        }
+                        else{
+                            Toast.makeText(getApplicationContext(),
+                                    "Once your is request approved by admin, you can start using  our services. \n"
+                                    +"Thank you!",Toast.LENGTH_SHORT).show();
+                            availabilitySwitch.setVisibility(View.INVISIBLE);
+                            mainMenuBtn.setVisibility(View.INVISIBLE);
+                        }
                     }
                 }
             }
@@ -179,6 +200,11 @@ public class MapsActivity  extends FragmentActivity implements OnMapReadyCallbac
             }
         });
     }
+
+
+
+
+
 
     /**
      * Manipulates the map once available.
