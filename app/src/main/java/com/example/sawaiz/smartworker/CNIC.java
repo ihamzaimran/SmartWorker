@@ -58,6 +58,7 @@ public class CNIC extends AppCompatActivity {
     private ImageView backImg;
 
     private static final int TAKE_IMAGE = 0;
+    private int GALLERYIMAGE1 = 1;
     private static final int PERMISSION_CODE = 1000;
     private Uri contentURI;
     ProgressDialog progressDialog;
@@ -75,6 +76,7 @@ public class CNIC extends AppCompatActivity {
 
         progressDialog = new ProgressDialog (this);
 
+        mAuth = FirebaseAuth.getInstance();
         userID = mAuth.getCurrentUser().getUid();
         reference = FirebaseDatabase.getInstance().getReference();
         myRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Handyman").child(userID);
@@ -89,26 +91,9 @@ public class CNIC extends AppCompatActivity {
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-
-                    if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED ||
-                            checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
-                                    PackageManager.PERMISSION_DENIED) {
-                        String[] permission = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
-                        requestPermissions(permission, PERMISSION_CODE);
-                    } else {
-                        //permission is already granted
-
-                        openCamera();
-
-                    }
-
-                } else {
-
-                    //system os < marshmallow
-
-                    openCamera();
-                }
+                Intent intent =  new Intent(Intent.ACTION_PICK,
+                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(intent, GALLERYIMAGE1);
 
             }
             });
@@ -126,59 +111,38 @@ public class CNIC extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 uploadImage();
-                Toast.makeText(getApplicationContext(), "CNIC Uploaded Successfully",
-                        Toast.LENGTH_SHORT).show();
-
-                Intent loginIntent = new Intent(CNIC.this, LoginActivity.class);
-                startActivity(loginIntent);
-                Toast.makeText(getApplicationContext(),"Congratulations! Your Account has been Created. Please Login into your account.",Toast.LENGTH_SHORT).show();
-                finish();
             }
         });
-
     }
 
-
-    private void openCamera()
-    {
-        Intent takeImage = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(takeImage, TAKE_IMAGE);
-
-        resetBtn.setVisibility(View.VISIBLE);
-        saveBTn.setVisibility(View.VISIBLE);
-    }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-            case PERMISSION_CODE: {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_CANCELED) {
+            return;
+        }
+        if (requestCode == GALLERYIMAGE1) {
+            if (data != null) {
+                contentURI = data.getData();
+                try {
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(Objects.requireNonNull(getApplication()).getContentResolver(), contentURI);
+                    String path = savingCNIC(bitmap);
+                    backImg.setImageBitmap(bitmap);
+                    resetBtn.setVisibility(View.VISIBLE);
+                    saveBTn.setVisibility(View.VISIBLE);
 
-                if (grantResults.length > 0 && grantResults[0]
-                        == PackageManager.PERMISSION_GRANTED) {
-
-
-                    openCamera();
-                } else {
-                    Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getApplicationContext(), "Failed!", Toast.LENGTH_SHORT).show();
                 }
-                break;
             }
 
-
+        } else{
+            Toast.makeText(getApplicationContext(), "Failed!", Toast.LENGTH_SHORT).show();
         }
     }
-
-
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK && requestCode == TAKE_IMAGE) {
-            Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
-            backImg.setImageBitmap(thumbnail);
-            savingCNIC(thumbnail);
-        }
-    }
-
 
     public String savingCNIC(Bitmap myBitmap) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
@@ -215,9 +179,9 @@ public class CNIC extends AppCompatActivity {
         ContentResolver cr = Objects.requireNonNull(getApplicationContext()).getContentResolver();
         MimeTypeMap mime = MimeTypeMap.getSingleton();
         return mime.getExtensionFromMimeType(cr.getType(uri));
-
-
     }
+
+
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void uploadImage() {
@@ -270,6 +234,13 @@ public class CNIC extends AppCompatActivity {
                                 progressDialog.dismiss();
                                 Toast.makeText(getApplicationContext(), "CNIC Uploaded Successfully",
                                         Toast.LENGTH_SHORT).show();
+
+                                Intent loginIntent = new Intent(CNIC.this, LoginActivity.class);
+                                startActivity(loginIntent);
+                                Toast.makeText(getApplicationContext(),
+                                        "Congratulations! Your Account has been Created. Please Login into your account.",
+                                        Toast.LENGTH_SHORT).show();
+                                finish();
 
 
                             }

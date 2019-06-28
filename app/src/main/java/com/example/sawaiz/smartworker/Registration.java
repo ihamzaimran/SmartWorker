@@ -30,7 +30,7 @@ public class Registration extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private ProgressBar progressBar;
 
-    private EditText mEmail,mPassword,mPhone,mCNIC,mFname,mLname,costTxt;;
+    private EditText mEmail,mPassword,mPhone,mCNIC,mFname,mLname,costTxt;
     private DatabaseReference myRef;
 
     private RadioGroup RegradioGroup;
@@ -161,7 +161,9 @@ public class Registration extends AppCompatActivity {
                             myRef = database.getReference().child("Users").child("Handyman").child(user_id);
                             myRef.setValue("true");
                             saveHandyman();
-                            startActivity(new Intent(Registration.this, CNIC.class));
+
+                            Intent regIntent = new Intent(Registration.this, CNIC.class);
+                            startActivity(regIntent);
                             finish();
                         }
                     }
