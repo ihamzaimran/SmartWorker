@@ -61,20 +61,20 @@ public class requestActivity extends AppCompatActivity {
         mydbref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                resultRequest.clear();
-                if(dataSnapshot.exists()){
-                    for(DataSnapshot request : dataSnapshot.getChildren()){
-                        FetchRequestInformation(request.getKey());
-                    }
+            resultRequest.clear();
+            if(dataSnapshot.exists()){
+                for(DataSnapshot request : dataSnapshot.getChildren()){
+                    FetchRequestInformation(request.getKey());
                 }
-                progressDialog.dismiss();
             }
+            progressDialog.dismiss();
+        }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                progressDialog.dismiss();
-            }
-        });
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError) {
+            progressDialog.dismiss();
+        }
+    });
        // progressDialog.dismiss();
     }
 

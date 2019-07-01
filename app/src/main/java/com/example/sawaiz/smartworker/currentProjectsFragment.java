@@ -21,8 +21,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DateFormat;
+import java.text.Format;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 
 /**
@@ -87,7 +94,7 @@ public class currentProjectsFragment extends Fragment {
         //progressDialog.dismiss();
     }
 
-    private void getInfo(String CustomerKey) {
+    private void getInfo(final String CustomerKey) {
         DatabaseReference mydbref1 = FirebaseDatabase.getInstance().getReference()
                 .child("CurrentAppointments").child(CustomerKey);
 
@@ -104,7 +111,7 @@ public class currentProjectsFragment extends Fragment {
                         }
                         if (child.getKey().equals("Date")) {
                             date = child.getValue().toString();
-                            //Log.e("date: ",date);
+
                         }
                         if (child.getKey().equals("CustomerId")) {
                             customerId = child.getValue().toString();

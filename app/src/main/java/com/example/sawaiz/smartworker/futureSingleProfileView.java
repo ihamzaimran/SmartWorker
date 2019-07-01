@@ -141,6 +141,12 @@ public class futureSingleProfileView extends AppCompatActivity implements OnMapR
                                     handyman.child(cancelRequestsID).setValue(true);
                                     customerDB.child(cancelRequestsID).setValue(true);
 
+                                    DatabaseReference dbref4 = FirebaseDatabase.getInstance().getReference().child("Users").child("Customer").child(customerId).child("Notification");
+                                    String RequestID1 = dbref4.push().getKey();
+                                    dbref4.child(RequestID1).setValue(true);
+                                    DatabaseReference dbref5 = FirebaseDatabase.getInstance().getReference().child("Users").child("Customer").child(customerId).child("Notification").child(RequestID1);
+                                    dbref5.child("Message").setValue(input);
+
                                     Map data = new HashMap();
                                     data.put("HandymanId", userId);
                                     data.put("CustomerId", customerId);

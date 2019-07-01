@@ -86,6 +86,7 @@
                 <action android:name="Display_Notifications" />
             </intent-filter>
         </receiver>
+
     </application>
 
 </manifest>

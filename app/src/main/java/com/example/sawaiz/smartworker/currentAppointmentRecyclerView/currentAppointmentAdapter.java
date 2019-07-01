@@ -39,6 +39,7 @@ public class currentAppointmentAdapter extends RecyclerView.Adapter<currentAppoi
         String Key = itemList.get(i).getKey();
 
 
+
         currentAppointmentViewHolder.date.setText(Date);
         currentAppointmentViewHolder.time.setText(Time);
         currentAppointmentViewHolder.key.setText(Key);
