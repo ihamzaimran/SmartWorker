@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatRatingBar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -78,6 +79,7 @@ public class requestSingleActivity extends AppCompatActivity implements OnMapRea
     private GoogleMap mMap;
     private SupportMapFragment mMapFragment;
     Location location;
+    private AppCompatRatingBar ratingBar;
 
 
     @Override
@@ -99,6 +101,7 @@ public class requestSingleActivity extends AppCompatActivity implements OnMapRea
         userPhone = (TextView) findViewById(R.id.userPhone);
         userdate = (TextView) findViewById(R.id.JobDate);
         usertime = (TextView) findViewById(R.id.JobTime);
+        ratingBar = findViewById(R.id.customerRatingBar);
 
 
         Intent i = getIntent();
@@ -135,7 +138,7 @@ public class requestSingleActivity extends AppCompatActivity implements OnMapRea
                 data.put("Time",time);
                 data.put("CustomerId",customerId);
                 data.put("CustomerLocation/lat",lat);
-                data.put("CustomerLocation/lat",lng);
+                data.put("CustomerLocation/lng",lng);
                 myDBref1.child(Key).updateChildren(data);
 
                 db =  FirebaseDatabase.getInstance().getReference().child("AppointmentRequests").child(Key);
@@ -282,14 +285,14 @@ public class requestSingleActivity extends AppCompatActivity implements OnMapRea
                         }
                         if (child.getKey().equals("CustomerLocation")){
                             lat = child.child("Latitude").getValue().toString();
-                            //Log.e("lat: ",lat);
-                            //Toast.makeText(getApplicationContext(),"lat: "+lat,Toast.LENGTH_LONG).show();
-                            lng = lat = child.child("Longitude").getValue().toString();
+                            lng = child.child("Longitude").getValue().toString();
                             locationLatLng = new LatLng(Double.valueOf(child.child("Latitude").getValue().toString()),Double.valueOf(child.child("Longitude").getValue().toString()));
                             if(locationLatLng != new LatLng(0,0)) {
                                 MarkeratCustomerLocation();
                             }
                         }
+
+
                     }
                 }
             }
@@ -316,24 +319,39 @@ public class requestSingleActivity extends AppCompatActivity implements OnMapRea
         mOtherUserDB.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()){
+                if(dataSnapshot.exists()) {
                     Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
-                    if(map.get("FirstName") != null){
+                    if (map.get("FirstName") != null) {
                         name = map.get("FirstName").toString();
                     }
-                    if(map.get("LastName") != null){
-                        name = name + " "+map.get("LastName").toString();
+                    if (map.get("LastName") != null) {
+                        name = name + " " + map.get("LastName").toString();
                         userName.setText(name);
                     }
-                    if(map.get("PhoneNumber") != null){
+                    if (map.get("PhoneNumber") != null) {
                         userPhone.setText(map.get("PhoneNumber").toString());
                     }
-                    if(map.get("notificationKey") != null){
+                    if (map.get("notificationKey") != null) {
                         notificationKey = map.get("notificationKey").toString();
                     }
-                    if(map.get("profileImageUrl") != null){
+                    if (map.get("profileImageUrl") != null) {
                         String url = map.get("profileImageUrl").toString();
                         Picasso.get().load(url).fit().into(userImage);
+                    }
+
+                    int ratingSum=0;
+                    float ratingsTotal = 0;
+                    float ratingsAvg = 0;
+                    if (map.get("CustomerRating") != null){
+                        for (DataSnapshot child : dataSnapshot.child("CustomerRating").getChildren()) {
+                            ratingSum = ratingSum + Integer.valueOf(child.getValue().toString());
+                            ratingsTotal++;
+                        }
+                        if (ratingsTotal != 0) {
+                            ratingsAvg = ratingSum / ratingsTotal;
+                            ratingBar.setRating(ratingsAvg);
+                        }
+
                     }
                 }
                 progressDialog.dismiss();

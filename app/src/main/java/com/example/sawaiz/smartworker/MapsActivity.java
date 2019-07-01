@@ -48,6 +48,7 @@ public class MapsActivity  extends FragmentActivity implements OnMapReadyCallbac
         com.google.android.gms.location.LocationListener {
 
     private String userID;
+    private static String sa;
     public String skill,sk,status;
 
     private GoogleMap mMap;
@@ -173,6 +174,7 @@ public class MapsActivity  extends FragmentActivity implements OnMapReadyCallbac
                     if(map.get("Skill")!=null){
                         skill = map.get("Skill").toString();
                         sk=skill+"Available";
+                        setSkill(sk);
                         //availabilitySwitch.setVisibility(View.VISIBLE);
 
 
@@ -308,6 +310,14 @@ public class MapsActivity  extends FragmentActivity implements OnMapReadyCallbac
     }
 
 
+    public static void setSkill(String s) {
+        sa = s;
+
+    }
+
+    public static String getSkill(){
+        return sa;
+    }
 
 }
 

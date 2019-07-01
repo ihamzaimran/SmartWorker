@@ -76,18 +76,6 @@ public class TransctionActivity extends AppCompatActivity {
 
 
 
-        //for calculating average rating for customer
-        /*
-for (DataSnapshot child : dataSnapshot.child("CustomerRating").getChildren()){
-                        ratingSum = ratingSum + Integer.valueOf(child.getValue().toString());
-                        ratingsTotal++;
-                    }
-                    if(ratingsTotal!= 0){
-                        ratingsAvg = ratingSum/ratingsTotal;
-                        mRatingBar.setRating(ratingsAvg);
-                    }
-
-*/
 
     }
 
@@ -136,7 +124,7 @@ for (DataSnapshot child : dataSnapshot.child("CustomerRating").getChildren()){
                                 String review = userInput.getText().toString();
                                 submitReviewRef.child("HandymenReview").setValue(review);
                                 customerReview = FirebaseDatabase.getInstance().getReference().child("Users")
-                                        .child("Customer").child(customerId).child("HandymenReview");
+                                        .child("Customer").child(currentSingleShow.getcustomerid()).child("HandymenReview");
                                 customerReview.child(Key).setValue(review);
                                 displayRatingBarDialog();
                             }
@@ -205,7 +193,7 @@ for (DataSnapshot child : dataSnapshot.child("CustomerRating").getChildren()){
                             public void onClick(DialogInterface dialog, int id) {
                                 submitRatingRef.child("CustomerRating").setValue(rate);
                                 customerRating = FirebaseDatabase.getInstance().getReference().child("Users")
-                                        .child("Customer").child(customerId).child("CustomerRating");
+                                        .child("Customer").child(currentSingleShow.getcustomerid()).child("CustomerRating");
                                 customerRating.child(Key).setValue(rate);
                                 finish();
                             }
@@ -218,7 +206,7 @@ for (DataSnapshot child : dataSnapshot.child("CustomerRating").getChildren()){
     private void recordHistory(String input) {
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference handyman = FirebaseDatabase.getInstance().getReference().child("Users").child("Handyman").child(userId).child("PastAppointments").child(Key);
-        DatabaseReference customerDB = FirebaseDatabase.getInstance().getReference().child("Users").child("Customer").child(customerId).child("PastAppointments").child(Key);
+        DatabaseReference customerDB = FirebaseDatabase.getInstance().getReference().child("Users").child("Customer").child(currentSingleShow.getcustomerid()).child("PastAppointments").child(Key);
         DatabaseReference myDBref1 = FirebaseDatabase.getInstance().getReference().child("PastAppointments").child(Key);
         String PastAppointmentsId = myDBref1.push().getKey();
         handyman.child(PastAppointmentsId).setValue(true);
@@ -228,7 +216,7 @@ for (DataSnapshot child : dataSnapshot.child("CustomerRating").getChildren()){
         data.put("HandymanId",userId);
         data.put("Date",currentSingleShow.getDate());
         data.put("Time",currentSingleShow.getTime());
-        data.put("CustomerId",customerId);
+        data.put("CustomerId",currentSingleShow.getcustomerid());
         data.put("JobDuration",currentSingleShow.getcompletehandyduration());
         data.put("TotalBill",currentSingleShow.getcompletehandybill());
         data.put("ForceStoppedJobReason",input);
@@ -236,7 +224,7 @@ for (DataSnapshot child : dataSnapshot.child("CustomerRating").getChildren()){
 
         db =  FirebaseDatabase.getInstance().getReference().child("CurrentAppointments").child(Key);
         hdb = FirebaseDatabase.getInstance().getReference().child("Users").child("Handyman").child(userId).child("CurrentAppointments").child(Key);
-        cdb =  FirebaseDatabase.getInstance().getReference().child("Users").child("Customer").child(customerId).child("CurrentAppointments").child(Key);
+        cdb =  FirebaseDatabase.getInstance().getReference().child("Users").child("Customer").child(currentSingleShow.getcustomerid()).child("CurrentAppointments").child(Key);
 
         hdb.removeValue();
         cdb.removeValue();

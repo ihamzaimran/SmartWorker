@@ -128,7 +128,46 @@ public class futureSingleProfileView extends AppCompatActivity implements OnMapR
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 String input = userInput.getText().toString();
-                                new SendNotification(input,"Request Cancellation Reason",notiKey);
+                                if(input == ""){
+                                    userInput.setError("Please provide a reason");
+                                }
+                                else {
+                                    new SendNotification(input, "Request Cancellation Reason", notiKey);
+                                    String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                                    DatabaseReference handyman = FirebaseDatabase.getInstance().getReference().child("Users").child("Handyman").child(userId).child("CancelRequestsList");
+                                    DatabaseReference customerDB = FirebaseDatabase.getInstance().getReference().child("Users").child("Customer").child(customerId).child("CancelRequestsList");
+                                    DatabaseReference myDBref1 = FirebaseDatabase.getInstance().getReference().child("CancelRequests");
+                                    String cancelRequestsID = myDBref1.push().getKey();
+                                    handyman.child(cancelRequestsID).setValue(true);
+                                    customerDB.child(cancelRequestsID).setValue(true);
+
+                                    Map data = new HashMap();
+                                    data.put("HandymanId", userId);
+                                    data.put("CustomerId", customerId);
+                                    data.put("Date", date);
+                                    data.put("Time", time);
+
+
+                                    myDBref1.child(cancelRequestsID).updateChildren(data);
+
+                                    db = FirebaseDatabase.getInstance().getReference().child("FutureAppointments").child(Key);
+                                    hdb = FirebaseDatabase.getInstance().getReference().child("Users").child("Handyman").child(userId).child("FutureAppointments").child(Key);
+                                    cdb = FirebaseDatabase.getInstance().getReference().child("Users").child("Customer").child(customerId).child("FutureAppointments").child(Key);
+
+                                    hdb.removeValue();
+                                    cdb.removeValue();
+                                    db.removeValue();
+                                    finish();
+                                }
+
+
+                            }
+                        })
+                .setNeutralButton("Skip",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                new SendNotification("Reason not provided by handyman!", "Request Cancellation Reason", notiKey);
                                 String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
                                 DatabaseReference handyman = FirebaseDatabase.getInstance().getReference().child("Users").child("Handyman").child(userId).child("CancelRequestsList");
                                 DatabaseReference customerDB = FirebaseDatabase.getInstance().getReference().child("Users").child("Customer").child(customerId).child("CancelRequestsList");
@@ -138,17 +177,17 @@ public class futureSingleProfileView extends AppCompatActivity implements OnMapR
                                 customerDB.child(cancelRequestsID).setValue(true);
 
                                 Map data = new HashMap();
-                                data.put("HandymanId",userId);
-                                data.put("CustomerId",customerId);
-                                data.put("Date",date);
-                                data.put("Time",time);
+                                data.put("HandymanId", userId);
+                                data.put("CustomerId", customerId);
+                                data.put("Date", date);
+                                data.put("Time", time);
 
 
                                 myDBref1.child(cancelRequestsID).updateChildren(data);
 
-                                db =  FirebaseDatabase.getInstance().getReference().child("FutureAppointments").child(Key);
+                                db = FirebaseDatabase.getInstance().getReference().child("FutureAppointments").child(Key);
                                 hdb = FirebaseDatabase.getInstance().getReference().child("Users").child("Handyman").child(userId).child("FutureAppointments").child(Key);
-                                cdb =  FirebaseDatabase.getInstance().getReference().child("Users").child("Customer").child(customerId).child("FutureAppointments").child(Key);
+                                cdb = FirebaseDatabase.getInstance().getReference().child("Users").child("Customer").child(customerId).child("FutureAppointments").child(Key);
 
                                 hdb.removeValue();
                                 cdb.removeValue();
@@ -184,18 +223,16 @@ public class futureSingleProfileView extends AppCompatActivity implements OnMapR
                             time = child.getValue().toString();
                             usertime.setText(child.getValue().toString());
                         }
-                        /*
+
                         if (child.getKey().equals("CustomerLocation")){
-                            //lat = child.child("Latitude").getValue().toString();
-                            //Log.e("lat: ",lat);
-                            //Toast.makeText(getApplicationContext(),"lat: "+lat,Toast.LENGTH_LONG).show();
-                            //lng = lat = child.child("Longitude").getValue().toString();
-                            locationLatLng = new LatLng(Double.valueOf(child.child("Latitude").getValue().toString()),Double.valueOf(child.child("Longitude").getValue().toString()));
-                             if(locationLatLng != new LatLng(0,0)) {
-                                 MarkeratCustomerLocation();
-                             }
+                            lat = child.child("lat").getValue().toString();
+                            lng = child.child("lng").getValue().toString();
+                            locationLatLng = new LatLng(Double.valueOf(child.child("lat").getValue().toString()),Double.valueOf(child.child("lng").getValue().toString()));
+                            if(locationLatLng != new LatLng(0,0)) {
+                                MarkeratCustomerLocation();
+                            }
                         }
-                        */
+
                     }
                 }
             }
@@ -206,6 +243,7 @@ public class futureSingleProfileView extends AppCompatActivity implements OnMapR
             }
         });
     }
+
 
     private void MarkeratCustomerLocation() {
         mMap.moveCamera(CameraUpdateFactory.newLatLng(locationLatLng));

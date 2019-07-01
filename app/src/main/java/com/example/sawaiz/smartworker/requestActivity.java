@@ -36,10 +36,8 @@ public class requestActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_request);
 
-       //progressDialog = new ProgressDialog(requestActivity.this);
-        //progressDialog.setMessage("Loading Requests...");
-        //progressDialog.setCancelable(false);
-        //progressDialog.show();
+        progressDialog = new ProgressDialog(requestActivity.this);
+
 
         recyclerView =(RecyclerView)(findViewById(R.id.requestRecyclerView));
         recyclerView.setNestedScrollingEnabled(false);
@@ -56,6 +54,9 @@ public class requestActivity extends AppCompatActivity {
     }
 
     private void getAllRequests() {
+        progressDialog.setMessage("Loading Requests...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
         DatabaseReference mydbref = FirebaseDatabase.getInstance().getReference().child("Users").child("Handyman").child(userId).child("RequestList");
         mydbref.addValueEventListener(new ValueEventListener() {
             @Override
@@ -66,13 +67,15 @@ public class requestActivity extends AppCompatActivity {
                         FetchRequestInformation(request.getKey());
                     }
                 }
+                progressDialog.dismiss();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                progressDialog.dismiss();
             }
         });
+       // progressDialog.dismiss();
     }
 
 
@@ -108,7 +111,7 @@ public class requestActivity extends AppCompatActivity {
 
             }
         });
-        //progressDialog.dismiss();
+        progressDialog.dismiss();
     }
 
     /*

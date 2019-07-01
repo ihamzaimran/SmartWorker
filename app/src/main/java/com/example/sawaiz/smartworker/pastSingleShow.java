@@ -8,9 +8,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatRatingBar;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.sawaiz.smartworker.appointmentsRecyclerView.appointmentViewHolder;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -29,15 +31,19 @@ public class pastSingleShow extends AppCompatActivity {
     private String Key,customerId,handymanId,name;
     private float rate;
     private AppCompatRatingBar customerRatingBar;
-    private Button report;
+    private Button back;
     private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_past_single_show);
-
-
+/*
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Loading Details...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+*/
         Intent i = getIntent();
         Key = i.getStringExtra("key");
 
@@ -54,7 +60,7 @@ public class pastSingleShow extends AppCompatActivity {
         time =(TextView)(findViewById(R.id.completetime));
         cname =(TextView)(findViewById(R.id.cname));
 
-        report =(Button)(findViewById(R.id.report));
+        back =(Button)(findViewById(R.id.pastsingleBack));
         customerRatingBar = (AppCompatRatingBar)(findViewById(R.id.customerRatingBar));
 
         myRef = FirebaseDatabase.getInstance().getReference().child("PastAppointments").child(Key);
@@ -62,9 +68,14 @@ public class pastSingleShow extends AppCompatActivity {
         appoid.setText(Key);
 
         progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Loading...");
 
-        progressDialog.show();
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
     }
 
@@ -74,6 +85,7 @@ public class pastSingleShow extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()){
+
                     for (DataSnapshot child:dataSnapshot.getChildren()){
                         if (child.getKey().equals("CustomerId")){
                             customerId = child.getValue().toString();
@@ -98,17 +110,21 @@ public class pastSingleShow extends AppCompatActivity {
                         }
                         if (child.getKey().equals("Time")){
                             time.setText(child.getValue().toString());
+
                         }
 
                     }
                 }
+
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 progressDialog.dismiss();
             }
+
         });
+
     }
 
     private void gethandyInformation(String handyman, String handymanId) {
@@ -126,7 +142,8 @@ public class pastSingleShow extends AppCompatActivity {
                         handyscost.setText(map.get("Skill").toString());
                     }
                 }
-                progressDialog.dismiss();
+
+
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -152,7 +169,7 @@ public class pastSingleShow extends AppCompatActivity {
                         cname.setText(name+ "  ");
                     }
                 }
-                progressDialog.dismiss();
+
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {

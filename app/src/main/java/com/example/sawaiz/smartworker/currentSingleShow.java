@@ -249,16 +249,10 @@ public class currentSingleShow extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()){
                     for (DataSnapshot child:dataSnapshot.getChildren()){
+
                         if (child.getKey().equals("CustomerId")){
                             customerId = child.getValue().toString();
-                            getUserInformation("Customer", customerId);
-                        }
-                        if (child.getKey().equals("HandymanId")){
-                            handymanId = child.getValue().toString();
-                            gethandyInformation("Handyman", handymanId);
-                        }
-                        if (child.getKey().equals("CustomerId")){
-                            customerId = child.getValue().toString();
+                            setcustomerid(customerId);
                             getUserInformation("Customer", customerId);
                         }
                         if (child.getKey().equals("HandymanId")){
