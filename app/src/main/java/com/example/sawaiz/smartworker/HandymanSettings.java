@@ -100,6 +100,10 @@ public class HandymanSettings extends AppCompatActivity {
 
         progressDialog = new ProgressDialog (this);
 
+        progressDialog.setMessage("Loading Profile...");
+
+        progressDialog.show();
+
         fname = (EditText) findViewById(R.id.fname);
         lname = (EditText) findViewById(R.id.lname);
         phone = (TextView) findViewById(R.id.phone);
@@ -230,6 +234,7 @@ public class HandymanSettings extends AppCompatActivity {
 
                     }
                 }
+                progressDialog.dismiss();
             }
 
             @Override
